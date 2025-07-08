@@ -1,7 +1,7 @@
-import { getData } from "@/actions/todoAction";
-import Todos from "@/components/todos";
-
 export default async function Home() {
-  const data = await getData();
-  return <Todos todos={data} />;
+  const tempContent = [];
+  for (let i = 0; i < 100; i++) {
+    tempContent.push(<h1>adas</h1>);
+  }
+  return <div>{tempContent}</div>;
 }
