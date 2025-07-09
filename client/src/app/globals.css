@@ -12,23 +12,10 @@
   --tone-five: #404040; /* 	Strong contrast text (e.g. dark buttons) */
   --tone-six: #2d2d2d; /* Max contrast or dark backgrounds (footer, dark cards, etc.) */
 
-  /* Accent Options */
-  --soft-blue: #4a90e2;
-  --muted-sand: #d9b382;
-  --beige: #c6aa84;
-  --dusty-rose: #d98c8c;
-  --sage-green: #7d9777;
-  --desaturated-orange: #e0a96d;
-
   /* Accent: Soft Blue */
   --accent-soft-blue-primary: #4a90e2; /* Buttons, links */
-  --accent-soft-blue-light: #d6e4f0; /* Lighter version for backgrounds or hover */
-  --accent-soft-blue-dark: #2c6695; /* Darker version for active states */
-
-  /* Accent: Muted Sand */
-  --accent-muted-sand-primary: #d9b382;
-  --accent-muted-sand-light: #f0e4d3;
-  --accent-muted-sand-dark: #b29267;
+  --accent-soft-blue-light: #c3d8f1;; /* Lighter version for backgrounds or hover */
+  --accent-soft-blue-dark: #3c78be; /* Darker version for active states */
 
   /* Accent: Beige */
   --accent-beige-primary: #c6aa84;
@@ -45,19 +32,14 @@
   --accent-sage-green-light: #c5d0c2;
   --accent-sage-green-dark: #5c7657;
 
-  /* Accent: Desaturated Orange */
-  --accent-desaturated-orange-primary: #e0a96d;
-  --accent-desaturated-orange-light: #f4dfc3;
-  --accent-desaturated-orange-dark: #c78a49;
-
   /* Decide on a primary and secondary accent to use. Care to use the same accent variant for each option here */
-  --accent-primary: var(--accent-muted-sand-primary);
-  --accent-primary-light: var(--accent-muted-sand-light);
-  --accent-primary-dark: var(--accent-muted-sand-dark);
+  --accent-primary: var(--accent-soft-blue-primary);
+  --accent-primary-light: var(--accent-soft-blue-light);
+  --accent-primary-dark: var(--accent-soft-blue-dark);
 
-  --accent-secondary: var(--accent-soft-blue-primary);
-  --accent-secondary-light: var(--accent-soft-blue-light);
-  --accent-secondary-dark: var(--accent-soft-blue-dark);
+  --accent-secondary: var(--accent-sage-green-primary);
+  --accent-secondary-light: var(--accent-sage-green-light);
+  --accent-secondary-dark: var(--accent-sage-green-dark);
 
   /* === Semantic Colors === */
   --success: #4caf50; /* Green */
@@ -151,6 +133,42 @@
 }
 
 .dark {
+  /* Dark Mode Accent Overrides, adjusted for contrast and visibility in dark mode */
+  /* Accent: Soft Blue */
+  --accent-soft-blue-primary: #82b7f5; /* Buttons, links, icons, highlights and general accent use */
+  --accent-soft-blue-light: #3d587a;  /* background, hover, border accents, tags, badges and focus rings */
+  --accent-soft-blue-dark: #5d95d6;    /* active or pressed states, hover emphasis, shadows or overlays, important borders */
+
+  /* Accent: Beige */
+  --accent-beige-primary: #dbc29f;   
+  --accent-beige-light: #5b4d3c;     
+  --accent-beige-dark: #c3aa88;       
+
+  /* Accent: Dusty Rose */
+  --accent-dusty-rose-primary: #e9a6a6;
+  --accent-dusty-rose-light: #5f3e3e;
+  --accent-dusty-rose-dark: #cc8888;
+
+  /* Accent: Sage Green */
+  --accent-sage-green-primary: #9bbf97;  
+  --accent-sage-green-light: #425244;   
+  --accent-sage-green-dark: #7ba37a;
+  
+  /* Decide on a primary and secondary accent to use. Care to use the same accent variant for each option here */
+  --accent-primary: var(--accent-soft-blue-primary);
+  --accent-primary-light: var(--accent-soft-blue-light);
+  --accent-primary-dark: var(--accent-soft-blue-dark);
+
+  --accent-secondary: var(--accent-sage-green-primary);
+  --accent-secondary-light: var(--accent-sage-green-light);
+  --accent-secondary-dark: var(--accent-sage-green-dark);
+
+  /* === Other === */
+  --link-color: var(--accent-primary);
+  --link-hover: var(--accent-primary-dark);
+  --border-color: var(--tone-five);
+  --heading-color: var(--tone-two);
+
   /* ==== Shadcn Variables === */
   --background: oklch(21.779% 0.00002 271.152);
   --foreground: var(--tone-one);
@@ -191,5 +209,13 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Remove Border Left Width in Drawer used in Mobile Nav DropDown*/
+.data-\[vaul-drawer-direction\=right\]\:border-l {
+  &[data-vaul-drawer-direction="right"] {
+    border-left-style: var(--tw-border-style);
+    border-left-width: 0px;
   }
 }

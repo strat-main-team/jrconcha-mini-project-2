@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Header } from "@/components/header";
+import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Roboto, Inter } from "next/font/google";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
 
 const inter = Inter({
   subsets: ["latin"],

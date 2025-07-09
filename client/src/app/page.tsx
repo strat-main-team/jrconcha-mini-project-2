@@ -1,7 +1,8 @@
-export default async function Home() {
-  const tempContent = [];
-  for (let i = 0; i < 100; i++) {
-    tempContent.push(<h1>adas</h1>);
-  }
-  return <div>{tempContent}</div>;
-}
+import { FC } from "react";
+
+const Home: FC = () => {
+ 
+  return <div></div>;
+};
+
+export default Home;
