@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Roboto, Inter } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+  fallback: ["Arial", "system-ui", "sans-serif"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const roboto = Roboto({
   subsets: ["latin"],
+  display: "swap",
+  variable: "--font-roboto",
+  fallback: ["--font-inter", "Arial", "system-ui", "sans-serif"],
 });
 
 export const metadata: Metadata = {
@@ -27,20 +31,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${roboto.className} ${inter.className}`}
+    >
       <head></head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system" /* Default theme is system preference */
+          defaultTheme="system" /* Default theme is system preference - works by https://github.com/pacocoursey/next-themes/blob/main/next-themes/src/script.ts */
           enableSystem
           disableTransitionOnChange={false}
         >
-        <Header></Header>
-        {/* Dynamically calculate a value to be used as the page margin. Use clamp function min, ideal, max, where returned value is (CVW * idealValue in %) as rem.  */}
-        <main className="m-[clamp(1.5rem,5vw,4rem)]">{children}</main>
+          <Header></Header>
+          {/* Dynamically calculate a value to be used as the page margin. Use clamp function min, ideal, max, where returned value is (CVW * idealValue in %) as rem.  */}
+          <main className="m-[clamp(1.5rem,5vw,4rem)]">{children}</main>
         </ThemeProvider>
       </body>
     </html>
