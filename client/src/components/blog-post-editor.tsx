@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import BreadCrumbs from "@/components/ui/breadcrumbs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,8 +7,31 @@ import { addBlogPost } from "@/actions/blog-post-action";
 import Link from "next/link";
 import Image from "next/image";
 import AddBlogPostButton from "./ui/add-blog-post-button";
+import { useActionState } from "react";
+import { toast } from "sonner";
 
 const BlogPostEditor: FC = () => {
+  // Track whether the server action of blog creation is successful or not.
+  const initialState = { success: false, message: "" };
+  const [state, formAction] = useActionState(addBlogPost, initialState);
+
+  // Display a toast depending on the status of the server action of blog creation
+  useEffect(() => {
+    if (state.success) {
+      toast.success("Success!", {
+        description: "Blog Post Creation Successful",
+        action: { label: "Dismiss", onClick: () => {} },
+      });
+      setImagePreviewUrl(""); // Reset imagepreviewurl so it doesnt linger
+    } else if (state.message && !state.success) {
+      toast.error("Error!", {
+        description: "Something went wrong with the creation process.",
+        action: { label: "Dismiss", onClick: () => {} },
+      });
+      setImagePreviewUrl(""); // Reset imagepreviewurl so it doesnt linger
+    }
+  }, [state]);
+
   // Handle Image State
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
 
@@ -24,7 +47,8 @@ const BlogPostEditor: FC = () => {
     <div>
       <BreadCrumbs></BreadCrumbs>
       <h1 className="mt-5 text-2xl">Post Editor</h1>
-      <form action={addBlogPost} className="mt-5">
+      {/* Form */}
+      <form action={formAction} className="mt-5">
         <div className="flex flex-col gap-y-3">
           <label className="font-medium" htmlFor="title">
             Title <span className="text-[var(--error)]">*</span>
@@ -85,7 +109,9 @@ const BlogPostEditor: FC = () => {
               referrerPolicy="no-referrer"
               target="_blank"
             >
-              <span>Markdown</span>
+              <span className="text-[var(--link-color)] hover:text-[var(--link-hover)] underline underline-offset-1 text-sm">
+                Markdown
+              </span>
             </Link>
             ) <span className="text-[var(--error)]">*</span>
           </label>
@@ -93,11 +119,10 @@ const BlogPostEditor: FC = () => {
             className="mb-1 text-ellipsis h-[300px]"
             name="content"
             id="content"
-            placeholder="# Common Mark Style Markdown Here"
+            placeholder="# CommonMark-Style Markdown Here."
             required
           ></Textarea>
 
-          {/* <ForwardRefEditor className="mt-10" markdown="Hello"></ForwardRefEditor> */}
           <AddBlogPostButton></AddBlogPostButton>
         </div>
       </form>

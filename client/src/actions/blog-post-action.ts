@@ -1,6 +1,6 @@
 "use server";
 // import { eq, not } from "drizzle-orm";
-// import { revalidatePath } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { db } from "@/db/drizzle";
 import { blogPost } from "@/db/schema";
 // import { BlogPostDataType } from "@/types/BlogPostDataType";
@@ -11,17 +11,20 @@ export const getBlogPosts = async () => {
   return data;
 };
 
-export const addBlogPost = async (formData: FormData) => {
-  
+export const addBlogPost = async (
+  prevState: { success: boolean; message: string },
+  formData: FormData
+) => {
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const content = formData.get("content") as string;
   const image_filename = formData.get("cover-image") as string;
 
   if (!title || !description || !content || !image_filename) {
-    throw new Error("Missing required fields.");
+    return { success: false, message: "Missing required fields." };
   }
   try {
+    // throw new Error("Error") // Test
     await db.insert(blogPost).values({
       image_filename: "image_filename",
       created_at: new Date(),
@@ -30,8 +33,10 @@ export const addBlogPost = async (formData: FormData) => {
       description: description,
       content: content,
     });
+    revalidatePath("/blog/post-editor");
+    return { success: true, message: "Post created successfully!" };
   } catch (e) {
-    throw new Error(`Failed to create new Blog Post: ${e}`);
+    return { success: false, message: `Something went wrong: ${e}` };
   }
 };
 

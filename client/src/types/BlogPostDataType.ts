@@ -1,5 +1,5 @@
 export type BlogPostDataType = {
-  id?: number;
+  id: number;
   image_filename: string;
   created_at: Date;
   updated_at: Date;
