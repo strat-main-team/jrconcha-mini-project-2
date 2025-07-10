@@ -41,7 +41,7 @@ const BlogPostItem: FC<Props> = ({ blogPostData, newYear }) => {
       </p>
       <p
         id="blog-post-desc"
-        className="mt-1 text-sm md:text-base  lg:text-lg text-[var(--tone-four)]"
+        className="mt-1 text-sm md:text-base  lg:text-lg text-[var(--tone-four)] text-ellipsis"
       >
         {blogPostData.description}
       </p>

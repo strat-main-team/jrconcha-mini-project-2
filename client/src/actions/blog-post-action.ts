@@ -3,7 +3,7 @@
 // import { revalidatePath } from "next/cache";
 import { db } from "@/db/drizzle";
 import { blogPost } from "@/db/schema";
-import { BlogPostDataType } from "@/types/BlogPostDataType";
+// import { BlogPostDataType } from "@/types/BlogPostDataType";
 
 export const getBlogPosts = async () => {
   const data = await db.select().from(blogPost);
@@ -11,16 +11,28 @@ export const getBlogPosts = async () => {
   return data;
 };
 
-export const addBlogPost = async ({ ...props }: BlogPostDataType) => {
-  await db.insert(blogPost).values({
-    image_filename: props.image_filename,
-    created_at: props.created_at,
-    updated_at: props.updated_at,
-    // author_id: props.author_id,
-    title: props.title,
-    description: props.description,
-    content: props.content,
-  });
+export const addBlogPost = async (formData: FormData) => {
+  
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+  const content = formData.get("content") as string;
+  const image_filename = formData.get("cover-image") as string;
+
+  if (!title || !description || !content || !image_filename) {
+    throw new Error("Missing required fields.");
+  }
+  try {
+    await db.insert(blogPost).values({
+      image_filename: "image_filename",
+      created_at: new Date(),
+      updated_at: new Date(),
+      title: title,
+      description: description,
+      content: content,
+    });
+  } catch (e) {
+    throw new Error(`Failed to create new Blog Post: ${e}`);
+  }
 };
 
 // export const deleteBlogPost = async (id: number) => {

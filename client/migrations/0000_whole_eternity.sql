@@ -10,8 +10,8 @@ CREATE TABLE "blog_post" (
 	"author_id" integer,
 	"title" text NOT NULL,
 	"content" text NOT NULL,
-	"description" text NOT NULL
+	"description" text NOT NULL,
+	"reading_time" integer
 );
 --> statement-breakpoint
-DROP TABLE "todo" CASCADE;--> statement-breakpoint
 ALTER TABLE "blog_post" ADD CONSTRAINT "blog_post_author_id_author_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."author"("id") ON DELETE no action ON UPDATE no action;

@@ -1,15 +1,14 @@
 "use client";
 import { FC, useState, useEffect } from "react";
-// import AddTodo from "./addTodo";
-import { addBlogPost } from "@/actions/blogPostAction";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
 import BlogPostItem from "./ui/blog-post-item";
+import Link from "next/link";
 
 interface Props {
   blogPosts: BlogPostDataType[];
 }
 
-const BlogPostInterface: FC<Props> = ({ blogPosts }) => {
+const BlogPostContent: FC<Props> = ({ blogPosts }) => {
   // Find which blog posts are the first of its year.
   const [firstBlogPosts, setFirstBlogPosts] = useState<BlogPostDataType[]>([]);
   useEffect(() => {
@@ -34,27 +33,18 @@ const BlogPostInterface: FC<Props> = ({ blogPosts }) => {
     setFirstBlogPosts(firstPostsByYear);
   }, [blogPosts]);
 
-  // Function that creates a new Blog Post. Other details (id) are generated serverside.
-  const createBlogPost = (
-    title: string,
-    description: string,
-    content: string,
-    image_filename: string,
-    created_at: Date,
-    updated_at: Date
-  ) => {
-    addBlogPost({
-      title,
-      description,
-      content,
-      image_filename,
-      created_at,
-      updated_at,
-    });
-  };
-
   return (
     <main>
+      <div className="flex justify-between items-end">
+        <h1 className="font-bold text-4xl md:text-5xl xl:text-6xl"> Blog</h1>
+        <Link href="blog/post-editor/" className="text-xs text-[var(--tone-four)] underline underline-offset-1px lg:text-sm xl:text-base" > Add a new post </Link>
+      </div>
+      <p className="mt-5 font-normal md:text-lg lg:text-xl">
+        {" "}
+        A humble software engineer&apos;s compilation of reflections,
+        experiments, and lessons from his journey through the tech world.{" "}
+      </p>
+
       <div className="w-full flex flex-col mt-8 gap-2">
         {/* For each blog post in DB, create a blog post item */}
         {blogPosts.map((blogPost) => (
@@ -69,4 +59,4 @@ const BlogPostInterface: FC<Props> = ({ blogPosts }) => {
   );
 };
 
-export default BlogPostInterface;
+export default BlogPostContent;
