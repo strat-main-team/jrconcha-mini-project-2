@@ -3,8 +3,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --breakpoint-3xl: 112rem; /* >= 1792px */
+}
+
+
 :root {
-  /* === Base Neutral === */
+  /* === Base Neutral, Lightest to Darkest=== */
   --tone-one: #f2f2f2; /* 	Backgrounds (light mode)*/
   --tone-two: #bfbfbf; /* 	Borders, low-emphasis or subtle text*/
   --tone-three: #8c8c8c; /* Body text */
@@ -133,7 +138,16 @@
 }
 
 .dark {
-  /* Dark Mode Accent Overrides, adjusted for contrast and visibility in dark mode */
+  /* === Base Neutral (Dark Mode) Inverted, One is Darkest while Six is Lightest === */
+  --tone-one: #1a1a1a;   /* Backgrounds (dark mode) */
+  --tone-two: #2d2d2d;   /* Borders, low-emphasis or subtle text */
+  --tone-three: #404040; /* Body text */
+  --tone-four: #8c8c8c;  /* Headings, subheadings */
+  --tone-five: #bfbfbf;  /* Strong contrast text (e.g. light buttons) */
+  --tone-six: #f2f2f2;   /* Max contrast or light backgrounds (e.g. cards or emphasized text) */
+
+  /* ===  Dark Mode Accent Overrides, adjusted for contrast and visibility in dark mode  === */
+  
   /* Accent: Soft Blue */
   --accent-soft-blue-primary: #82b7f5; /* Buttons, links, icons, highlights and general accent use */
   --accent-soft-blue-light: #3d587a;  /* background, hover, border accents, tags, badges and focus rings */
@@ -166,12 +180,12 @@
   /* === Other === */
   --link-color: var(--accent-primary);
   --link-hover: var(--accent-primary-dark);
-  --border-color: var(--tone-five);
+  --border-color: var(--tone-four);
   --heading-color: var(--tone-two);
 
   /* ==== Shadcn Variables === */
   --background: oklch(21.779% 0.00002 271.152);
-  --foreground: var(--tone-one);
+  --foreground: var(--tone-six);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
