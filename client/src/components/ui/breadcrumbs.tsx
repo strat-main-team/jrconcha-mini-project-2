@@ -29,13 +29,13 @@ const BreadCrumbs: FC = () => {
     <div className="flex gap-x-2 justify-items-start">
       {formattedPathNames.length > 1 ? (
         <Link
-          className="flex items-center justify-center h-[12px] w-[12px] mr-2"
+          className="flex items-center justify-center h-[12px] w-[12px] md:h-[20px] md:w-[20px] mr-2"
           href={`/${pathNames[pathNames.length - 2]}`}
         >
           <FontAwesomeIcon
             icon={faArrowLeft}
-            width={12}
-            height={12}
+            className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl"
+
           ></FontAwesomeIcon>
         </Link>
       ) : (
@@ -44,7 +44,7 @@ const BreadCrumbs: FC = () => {
       {formattedPathNames.map((element) => {
         // If current pathname element is the last element of pathNames array, do not render as a link.
         return element === formattedPathNames[formattedPathNames.length - 1] ? (
-          <p key={element} className="text-xs font-medium ">
+          <p key={element} className="text-xs font-medium md:text-sm ">
             {" "}
             {element}{" "}
           </p>
@@ -53,11 +53,11 @@ const BreadCrumbs: FC = () => {
             <Link
               key={element}
               href={`/${element}`}
-              className="text-xs font-normal underline underline-offset-2 hover:drop-shadow-[0_0_3px_var(--foreground)] duration-150"
+              className="text-xs font-normal underline underline-offset-2 hover:drop-shadow-[0_0_3px_var(--foreground)] duration-150 md:text-sm"
             >
               {element}{" "}
             </Link>
-            <p className="text-xs font-medium"> / </p>
+            <p className="text-xs font-medium md:text-sm"> / </p>
           </>
         );
       })}

@@ -79,7 +79,7 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
               className="active:bg-accent lg:p-5"
             >
               <FontAwesomeIcon
-                className="text-[var(--tone-seven)]"
+                className="text-[var(--tone-seven)] text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl"
                 icon={faPenToSquare}
               ></FontAwesomeIcon>
             </Button>
@@ -88,7 +88,7 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
               aria-label="Toggle italic"
               pressed={editMode}
               onPressedChange={() => setEditMode((prev) => !prev)} // Toggle edit and delete buttons visibility.
-              className="py-4 border-1 border-[var(--tone-four)] w-[70px]"
+              className="py-4 lg:py-5 border-1 border-[var(--tone-four)] w-[70px]"
             >
               {editMode ? "Editing" : "Viewing"}
             </Toggle>
