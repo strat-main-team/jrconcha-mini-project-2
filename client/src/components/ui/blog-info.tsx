@@ -2,6 +2,7 @@ import { FC, Fragment } from "react";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
+import BreadCrumbs from "./breadcrumbs";
 
 interface Props {
   blogPostData: BlogPostDataType;
@@ -10,7 +11,8 @@ interface Props {
 const BlogInfo: FC<Props> = ({ blogPostData }) => {
   return (
     <Fragment>
-      <h1 className="text-4xl font-semibold">{blogPostData.title}</h1>
+      <BreadCrumbs></BreadCrumbs>
+      <h1 className="mt-10 text-4xl font-semibold">{blogPostData.title}</h1>
       <hr className="mt-5"></hr>
       <div className="flex w-full mt-5 gap-3 items-center">
         <div className="w-9 h-9 min-w-[36px] relative">
@@ -50,7 +52,7 @@ const BlogInfo: FC<Props> = ({ blogPostData }) => {
           </p>
         )}
       </div>
-        <hr className="mt-5"></hr>
+      <hr className="mt-5"></hr>
     </Fragment>
   );
 };

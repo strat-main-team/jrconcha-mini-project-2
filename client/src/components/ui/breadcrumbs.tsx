@@ -2,6 +2,8 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { FC } from "react";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function capitalizeFirstLetter(val: string) {
   return String(val).charAt(0).toUpperCase() + String(val).slice(1);
@@ -17,15 +19,28 @@ const BreadCrumbs: FC = () => {
   const formattedPathNames = pathNames.map((element) => {
     const formattedElement = element
       .split("-")
-      .map((word) => {
-        return capitalizeFirstLetter(word);
-      })
+      .filter((element) => isNaN(Number(element)) === true) // Remove the Number Part, for the purpose of blog breadcrumbs
+      .map((word) => capitalizeFirstLetter(word))
       .join(" ");
     return formattedElement;
   });
 
   return (
     <div className="flex gap-x-2 justify-items-start">
+      {formattedPathNames.length > 1 ? (
+        <Link
+          className="flex items-center justify-center h-[12px] w-[12px] mr-2"
+          href={`/${pathNames[pathNames.length - 2]}`}
+        >
+          <FontAwesomeIcon
+            icon={faArrowLeft}
+            width={12}
+            height={12}
+          ></FontAwesomeIcon>
+        </Link>
+      ) : (
+        <></>
+      )}
       {formattedPathNames.map((element) => {
         // If current pathname element is the last element of pathNames array, do not render as a link.
         return element === formattedPathNames[formattedPathNames.length - 1] ? (
