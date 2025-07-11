@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { getBlogPosts } from "@/actions/blog-post-action";
-import BlogPostContent from "@/components/blog-post-content";
+import BlogPostsList from "@/components/blog-posts-list";
 
 const BlogPage: FC = async () => {
   const data = await getBlogPosts();
   return (
     <div>
-      <BlogPostContent blogPosts={data}></BlogPostContent>
+      <BlogPostsList blogPosts={data}></BlogPostsList>
     </div>
   );
 };

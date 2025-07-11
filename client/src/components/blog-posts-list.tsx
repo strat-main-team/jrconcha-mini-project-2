@@ -8,7 +8,7 @@ interface Props {
   blogPosts: BlogPostDataType[];
 }
 
-const BlogPostContent: FC<Props> = ({ blogPosts }) => {
+const BlogPostsList: FC<Props> = ({ blogPosts }) => {
   // Find which blog posts are the first of its year.
   const [firstBlogPosts, setFirstBlogPosts] = useState<BlogPostDataType[]>([]);
   useEffect(() => {
@@ -68,4 +68,4 @@ const BlogPostContent: FC<Props> = ({ blogPosts }) => {
   );
 };
 
-export default BlogPostContent;
+export default BlogPostsList;
