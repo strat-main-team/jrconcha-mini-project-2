@@ -12,25 +12,48 @@ export const getBlogPosts = async () => {
   return data;
 };
 
-export const getBlogPostById = async (id: number) => {
+export const getBlogPostById = async (
+  id: number
+): Promise<
+  | {
+      success: true;
+      message: string;
+      data: BlogPostDataType;
+    }
+  | {
+      success: false;
+      message: string;
+    }
+> => {
   try {
     // Use the id to find the equivalent entry with the same id.
     const result = await db.query.blogPost.findFirst({
       where: eq(blogPost.id, id),
     });
 
-    return result;
+    if (!result) {
+      return {
+        success: false,
+        message: `Could not find this blog post using id: ${id}.`,
+      };
+    }
+
+    return {
+      success: true,
+      message: "getBlogPostById Successful",
+      data: result,
+    };
   } catch (e) {
     return {
-      error: `Could not find this blog post using id: ${id}. Error: ${e}`,
+      success: false,
+      message: `Could not find this blog post using id: ${id}. Error: ${e}`,
     };
   }
 };
 
 export async function generateMetadata({ params }) {
   const id = Number(params.slug.split("-")[0]);
-  const blogPost = await getBlogPostById(id) as BlogPostDataType;
-  
+  const blogPost = (await getBlogPostById(id)) as BlogPostDataType;
 
   if (blogPost) {
     return {
@@ -41,7 +64,7 @@ export async function generateMetadata({ params }) {
 }
 
 export const addBlogPost = async (
-  prevState: { success: boolean; message: string },
+  prevState: { success: boolean; message: string }, // Required by the useActionState, because we're returning {success, message}
   formData: FormData
 ) => {
   const title = formData.get("title") as string;
@@ -63,7 +86,10 @@ export const addBlogPost = async (
       content: content,
     });
     revalidatePath("/blog/post-editor");
-    return { success: true, message: "Post created successfully!" };
+    return {
+      success: true,
+      message: "Successfully created blog post.",
+    };
   } catch (e) {
     return { success: false, message: `Something went wrong: ${e}` };
   }

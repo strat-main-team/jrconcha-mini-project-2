@@ -10,14 +10,13 @@ export default async function BlogPostPage({
   params: { slug: string };
 }) {
   const id = Number(params.slug.split("-")[0]);
-  const blogPost = await getBlogPostById(id);
-
-  if (!blogPost) return notFound();
-
+  const result = await getBlogPostById(id);
+  if (!result.success) return notFound(); // Type Guard
+  
   return (
     <section>
-      <BlogInfo blogPostData={blogPost}></BlogInfo>
-      <BlogPostContent markdown={blogPost.content}></BlogPostContent>
+      <BlogInfo blogPostData={result.data}></BlogInfo>
+      <BlogPostContent markdown={result.data.content}></BlogPostContent>
       <BlogComment></BlogComment>
     </section>
   );
