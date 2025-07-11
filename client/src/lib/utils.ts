@@ -19,3 +19,9 @@ export const monthNames = [
   "November",
   "December",
 ];
+
+export const formatDate = (dateObject: Date) => {
+  return `${
+    monthNames[dateObject.getMonth()]
+  } ${dateObject.getDay()}, ${dateObject.getFullYear()}`;
+};

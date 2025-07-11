@@ -35,17 +35,26 @@ const BlogPostContent: FC<Props> = ({ blogPosts }) => {
 
   return (
     <main>
-      <div className="flex justify-between items-end">
-        <h1 className="font-bold text-4xl md:text-5xl xl:text-6xl"> Blog</h1>
-        <Link href="blog/post-editor/" className="text-xs text-[var(--tone-four)] underline underline-offset-1px lg:text-sm xl:text-base" > Add a new post </Link>
+      <div className="flex justify-between items-end px-2">
+        <h1 className="font-bold text-4xl md:text-5xl xl:text-5xl 3xl:text-6xl">
+          {" "}
+          Blog
+        </h1>
+        <Link
+          href="blog/post-editor/"
+          className="text-xs text-[var(--link-color)] hover:text-[var(--link-hover)] underline underline-offset-1px lg:text-sm xl:text-base"
+        >
+          {" "}
+          Add a new post{" "}
+        </Link>
       </div>
-      <p className="mt-5 font-normal md:text-lg lg:text-xl">
+      <p className="mt-5 font-normal md:text-lg lg:text-xl px-2">
         {" "}
         A humble software engineer&apos;s compilation of reflections,
         experiments, and lessons from his journey through the tech world.{" "}
       </p>
 
-      <div className="w-full flex flex-col mt-8 gap-2">
+      <div className="w-full flex flex-col mt-8">
         {/* For each blog post in DB, create a blog post item */}
         {blogPosts.map((blogPost) => (
           <BlogPostItem
