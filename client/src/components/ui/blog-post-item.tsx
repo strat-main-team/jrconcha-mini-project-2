@@ -1,7 +1,8 @@
 "use client";
 import { FC } from "react";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
-import { formatDate } from "@/lib/utils";
+import { generateSlug, formatDate } from "@/lib/utils";
+import Link from "next/link";
 
 interface Props {
   blogPostData: BlogPostDataType;
@@ -22,6 +23,10 @@ const BlogPostItem: FC<Props> = ({ blogPostData, newYear }) => {
         ""
       )}
       <div className="group hover:bg-[var(--tone-two)] p-2 rounded-sm">
+        <Link
+          key={blogPostData.id}
+          href={generateSlug(blogPostData.id!, blogPostData.title)}
+        >
           <h1 className="font-bold text-lg md:text-xl 3xl:text-2xl text-[var(--accent-primary)] group-hover:underline">
             {" "}
             {blogPostData.title}
@@ -40,6 +45,7 @@ const BlogPostItem: FC<Props> = ({ blogPostData, newYear }) => {
           >
             {blogPostData.description}
           </p>
+        </Link>
       </div>
     </div>
   );

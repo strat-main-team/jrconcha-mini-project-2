@@ -1,8 +1,9 @@
 "use server";
-// import { eq, not } from "drizzle-orm";
+import { eq, not } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db/drizzle";
 import { blogPost } from "@/db/schema";
+import { BlogPostDataType } from "@/types/BlogPostDataType";
 // import { BlogPostDataType } from "@/types/BlogPostDataType";
 
 export const getBlogPosts = async () => {
@@ -10,6 +11,34 @@ export const getBlogPosts = async () => {
   if (!data) console.log("Database is empty.");
   return data;
 };
+
+export const getBlogPostById = async (id: number) => {
+  try {
+    // Use the id to find the equivalent entry with the same id.
+    const result = await db.query.blogPost.findFirst({
+      where: eq(blogPost.id, id),
+    });
+
+    return result;
+  } catch (e) {
+    return {
+      error: `Could not find this blog post using id: ${id}. Error: ${e}`,
+    };
+  }
+};
+
+export async function generateMetadata({ params }) {
+  const id = Number(params.slug.split("-")[0]);
+  const blogPost = await getBlogPostById(id) as BlogPostDataType;
+  
+
+  if (blogPost) {
+    return {
+      title: blogPost.title,
+      description: blogPost.description,
+    };
+  }
+}
 
 export const addBlogPost = async (
   prevState: { success: boolean; message: string },

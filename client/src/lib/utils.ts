@@ -20,6 +20,10 @@ export const monthNames = [
   "December",
 ];
 
+export function generateSlug(id: number, title: string) {
+  return `/blog/${id}-${title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "")}`;
+}
+
 export const formatDate = (dateObject: Date) => {
   return `${
     monthNames[dateObject.getMonth()]

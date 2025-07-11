@@ -1,7 +1,24 @@
-import { FC } from "react";
+import { notFound } from "next/navigation";
+import { getBlogPostById } from "@/actions/blog-post-action";
+import BlogPostContent from "@/components/ui/blog-post-content";
+import BlogInfo from "@/components/ui/blog-info";
+import BlogComment from "@/components/ui/blog-comment";
 
-const BlogPostPage: FC = () => {
-  return <></>;
-};
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const id = Number(params.slug.split("-")[0]);
+  const blogPost = await getBlogPostById(id);
 
-export default BlogPostPage;
+  if (!blogPost) return notFound();
+
+  return (
+    <section>
+      <BlogInfo blogPostData={blogPost}></BlogInfo>
+      <BlogPostContent markdown={blogPost.content}></BlogPostContent>
+      <BlogComment></BlogComment>
+    </section>
+  );
+}
