@@ -7,7 +7,8 @@ import NavigationMenu from "./ui/navigation-menu";
 
 const Header: FC = () => {
   return (
-    <div className="h-[60px] lg:h-[80px] px-[16px] flex items-center justify-between sticky top-0 bg-[var(--background)] md:backdrop-blur-sm border-b-1 border-b-[var(--border-color)]">
+    // z-10 so that it renders above the switch thumb component, but the switch thumb is still interactable
+    <div className="z-10 h-[60px] lg:h-[80px] px-[16px] flex items-center justify-between sticky top-0 bg-[var(--background)] md:bg-transparent md:backdrop-blur-sm border-b-1 border-b-[var(--border-color)]">
       <Link
         className=" flex gap-x-3 hover:underline hover:decoration-2 hover:outline-1 active:outline-1 font-bold rounded-2xl px-2"
         href={"/"}

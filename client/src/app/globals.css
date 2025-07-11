@@ -3,18 +3,23 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --breakpoint-3xl: 112rem; /* >= 1792px */
+}
+
 :root {
-  /* === Base Neutral === */
-  --tone-one: #f2f2f2; /* 	Backgrounds (light mode)*/
-  --tone-two: #bfbfbf; /* 	Borders, low-emphasis or subtle text*/
-  --tone-three: #8c8c8c; /* Body text */
-  --tone-four: #595959; /* Headings, subheadings */
-  --tone-five: #404040; /* 	Strong contrast text (e.g. dark buttons) */
-  --tone-six: #2d2d2d; /* Max contrast or dark backgrounds (footer, dark cards, etc.) */
+  /* === Base Neutral, Lightest to Darkest=== */
+  --tone-one: #f7f7f7; /* Lightest background */
+  --tone-two: #e6e6e6; /* Card backgrounds, input fields */
+  --tone-three: #cccccc; /* Borders, muted text */
+  --tone-four: #a3a3a3; /* Placeholder text, secondary icons */
+  --tone-five: #737373; /* Body text */
+  --tone-six: #404040; /* Headings, strong text */
+  --tone-seven: #2d2d2d; /* Max contrast, dark backgrounds (footer, dark cards) */
 
   /* Accent: Soft Blue */
   --accent-soft-blue-primary: #4a90e2; /* Buttons, links */
-  --accent-soft-blue-light: #c3d8f1;; /* Lighter version for backgrounds or hover */
+  --accent-soft-blue-light: #c3d8f1; /* Lighter version for backgrounds or hover */
   --accent-soft-blue-dark: #3c78be; /* Darker version for active states */
 
   /* Accent: Beige */
@@ -60,7 +65,7 @@
   /* ==== Shadcn Variables === */
   --radius: 0.625rem;
   --background: var(--tone-one);
-  --foreground: var(--tone-six);
+  --foreground: var(--tone-seven);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -133,16 +138,26 @@
 }
 
 .dark {
-  /* Dark Mode Accent Overrides, adjusted for contrast and visibility in dark mode */
+  /* === Base Neutral (Dark Mode) Inverted, One is Darkest while Six is Lightest === */
+  --tone-one:   #121212; /* Base dark background */
+  --tone-two:   #1d1d1d; /* Slightly lighter than base (cards, inputs) */
+  --tone-three: #2a2a2a; /* Border-level dark */
+  --tone-four:  #3f3f3f; /* Muted text, secondary elements */
+  --tone-five:  #6b6b6b; /* Body text */
+  --tone-six:   #b0b0b0; /* Headings, bold text */
+  --tone-seven: #f2f2f2; /* Max contrast (inverted light color) */
+
+  /* ===  Dark Mode Accent Overrides, adjusted for contrast and visibility in dark mode  === */
+
   /* Accent: Soft Blue */
   --accent-soft-blue-primary: #82b7f5; /* Buttons, links, icons, highlights and general accent use */
-  --accent-soft-blue-light: #3d587a;  /* background, hover, border accents, tags, badges and focus rings */
-  --accent-soft-blue-dark: #5d95d6;    /* active or pressed states, hover emphasis, shadows or overlays, important borders */
+  --accent-soft-blue-light: #3d587a; /* background, hover, border accents, tags, badges and focus rings */
+  --accent-soft-blue-dark: #5d95d6; /* active or pressed states, hover emphasis, shadows or overlays, important borders */
 
   /* Accent: Beige */
-  --accent-beige-primary: #dbc29f;   
-  --accent-beige-light: #5b4d3c;     
-  --accent-beige-dark: #c3aa88;       
+  --accent-beige-primary: #dbc29f;
+  --accent-beige-light: #5b4d3c;
+  --accent-beige-dark: #c3aa88;
 
   /* Accent: Dusty Rose */
   --accent-dusty-rose-primary: #e9a6a6;
@@ -150,10 +165,10 @@
   --accent-dusty-rose-dark: #cc8888;
 
   /* Accent: Sage Green */
-  --accent-sage-green-primary: #9bbf97;  
-  --accent-sage-green-light: #425244;   
+  --accent-sage-green-primary: #9bbf97;
+  --accent-sage-green-light: #425244;
   --accent-sage-green-dark: #7ba37a;
-  
+
   /* Decide on a primary and secondary accent to use. Care to use the same accent variant for each option here */
   --accent-primary: var(--accent-soft-blue-primary);
   --accent-primary-light: var(--accent-soft-blue-light);
@@ -166,12 +181,12 @@
   /* === Other === */
   --link-color: var(--accent-primary);
   --link-hover: var(--accent-primary-dark);
-  --border-color: var(--tone-five);
+  --border-color: var(--tone-four);
   --heading-color: var(--tone-two);
 
   /* ==== Shadcn Variables === */
   --background: oklch(21.779% 0.00002 271.152);
-  --foreground: var(--tone-one);
+  --foreground: var(--tone-seven);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);

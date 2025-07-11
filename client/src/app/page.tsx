@@ -1,8 +1,7 @@
 import { FC } from "react";
 
-const Home: FC = () => {
- 
-  return <div></div>;
+const HomePage: FC = async () => {
+  return <></>;
 };
 
-export default Home;
+export default HomePage;

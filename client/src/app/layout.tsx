@@ -49,7 +49,7 @@ export default function RootLayout({
         >
           <Header></Header>
           {/* Dynamically calculate a value to be used as the page margin. Use clamp function min, ideal, max, where returned value is (CVW * idealValue in %) as rem.  */}
-          <main className="m-[clamp(1.5rem,5vw,4rem)]">{children}</main>
+          <main className="">{children}</main>
         </ThemeProvider>
       </body>
     </html>
