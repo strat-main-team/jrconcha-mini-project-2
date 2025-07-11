@@ -1,9 +1,13 @@
 import { FC } from "react";
-import { Button } from "../ui/button";
+import { Button } from "./button";
 import { useFormStatus } from "react-dom";
 import { Loader2Icon } from "lucide-react";
 
-const AddBlogPostButton: FC = () => {
+interface Props {
+  isEditing: boolean;
+}
+
+const BlogPostEditorButton: FC<Props> = ({ isEditing }) => {
   const { pending } = useFormStatus();
 
   return (
@@ -13,6 +17,8 @@ const AddBlogPostButton: FC = () => {
           <Loader2Icon className="animate-spin mr-2" />
           Please Wait
         </>
+      ) : isEditing ? (
+        "Update Blog Post"
       ) : (
         "Create Blog Post"
       )}
@@ -20,4 +26,4 @@ const AddBlogPostButton: FC = () => {
   );
 };
 
-export default AddBlogPostButton;
+export default BlogPostEditorButton;

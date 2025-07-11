@@ -1,5 +1,5 @@
 "use server";
-import { eq, not } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db/drizzle";
 import { blogPost } from "@/db/schema";
@@ -23,6 +23,7 @@ export const getBlogPostById = async (
   | {
       success: false;
       message: string;
+      data: null;
     }
 > => {
   try {
@@ -35,6 +36,7 @@ export const getBlogPostById = async (
       return {
         success: false,
         message: `Could not find this blog post using id: ${id}.`,
+        data: null,
       };
     }
 
@@ -47,21 +49,22 @@ export const getBlogPostById = async (
     return {
       success: false,
       message: `Could not find this blog post using id: ${id}. Error: ${e}`,
+      data: null,
     };
   }
 };
 
-export async function generateMetadata({ params }) {
-  const id = Number(params.slug.split("-")[0]);
-  const blogPost = (await getBlogPostById(id)) as BlogPostDataType;
+// export async function generateMetadata({ params }) {
+//   const id = Number(params.slug.split("-")[0]);
+//   const blogPost = (await getBlogPostById(id)) as BlogPostDataType;
 
-  if (blogPost) {
-    return {
-      title: blogPost.title,
-      description: blogPost.description,
-    };
-  }
-}
+//   if (blogPost) {
+//     return {
+//       title: blogPost.title,
+//       description: blogPost.description,
+//     };
+//   }
+// }
 
 export const addBlogPost = async (
   prevState: { success: boolean; message: string }, // Required by the useActionState, because we're returning {success, message}
@@ -88,35 +91,67 @@ export const addBlogPost = async (
     revalidatePath("/blog/post-editor");
     return {
       success: true,
-      message: "Successfully created blog post.",
+      message: "Blog post created successfully.",
     };
   } catch (e) {
-    return { success: false, message: `Something went wrong: ${e}` };
+    return {
+      success: false,
+      message: `Something went wrong during creation: ${e}`,
+    };
   }
 };
 
-// export const deleteBlogPost = async (id: number) => {
-//   await db.delete(blogPost).where(eq(blogPost.id, id));
+export const editBlogPost = async (
+  prevState: { success: boolean; message: string }, // Required by the useActionState, because we're returning {success, message}
+  id: number,
+  formData: FormData
+) => {
+  try {
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const content = formData.get("content") as string;
+    const image_filename = formData.get("cover-image") as string;
 
-//   revalidatePath("/");
-// };
+    if (!title || !description || !content || !image_filename) {
+      return { success: false, message: "Missing required fields." };
+    }
+
+    await db
+      .update(blogPost)
+      .set({
+        title: title,
+        description: description,
+        content: content,
+        updated_at: new Date(),
+        image_filename: "image_filename",
+      })
+      .where(eq(blogPost.id, id));
+
+    revalidatePath("/blog");
+    return {
+      success: true,
+      message: "Blog post updated successfully.",
+    };
+  } catch (e) {
+    return { success: false, message: `Something went wrong during the update ${e}` };
+  }
+};
+
+export const deleteBlogPost = async (id: number) => {
+  try {
+    await db.delete(blogPost).where(eq(blogPost.id, id));
+  } catch (e) {
+    throw new Error(`Failed to Delete the blog Post ${e}`);
+  }
+
+  revalidatePath("/blog");
+};
 
 // export const toggleBlogPost = async (id: number) => {
 //   await db
 //     .update(blogPost)
 //     .set({
 //       done: not(blogPost.done),
-//     })
-//     .where(eq(blogPost.id, id));
-
-//   revalidatePath("/");
-// };
-
-// export const editBlogPost = async (id: number, text: string) => {
-//   await db
-//     .update(blogPost)
-//     .set({
-//       text: text,
 //     })
 //     .where(eq(blogPost.id, id));
 

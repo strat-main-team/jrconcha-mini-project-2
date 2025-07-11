@@ -3,14 +3,42 @@ import { FC, useState, useEffect } from "react";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
 import BlogPostItem from "./ui/blog-post-item";
 import Link from "next/link";
+import { Button } from "./ui/button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { Toggle } from "@/components/ui/toggle";
+import { deleteBlogPost, getBlogPostById } from "@/actions/blog-post-action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface Props {
   blogPosts: BlogPostDataType[];
 }
 
 const BlogPostsList: FC<Props> = ({ blogPosts }) => {
+  // Handle the event where the delete button is clicked
+  const handleDelete = (id: number) => {
+    getBlogPostById(id).then((result) => {
+      if (result.data) {
+        toast(`Successfully deleted the blog post: "${result.data.title}"`);
+        deleteBlogPost(id);
+      }
+    });
+  };
+
+  // Handle the event where the edit button is clicked
+  const router = useRouter();
+  const handleEdit = (id: number) => {
+    router.push(`/blog/post-editor?editing=true&id=${id}`);
+  };
+
+  // Track state of editMode, which decides if to show the buttons for edit and delete or not.
+  const [editMode, setEditMode] = useState(false);
+
   // Find which blog posts are the first of its year.
   const [firstBlogPosts, setFirstBlogPosts] = useState<BlogPostDataType[]>([]);
+
+  // Run whenever blogPosts change, so the latest blogPosts are displayed.
   useEffect(() => {
     if (!blogPosts.length) return;
 
@@ -40,13 +68,31 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
           {" "}
           Blog
         </h1>
-        <Link
-          href="blog/post-editor/"
-          className="text-xs text-[var(--link-color)] hover:text-[var(--link-hover)] underline underline-offset-1px lg:text-sm xl:text-base"
-        >
-          {" "}
-          Add a new post{" "}
-        </Link>
+        <div className="flex gap-2 items-center">
+          <Link
+            href="blog/post-editor/"
+            className="text-xs text-[var(--link-color)] hover:text-[var(--link-hover)] underline underline-offset-1px lg:text-sm xl:text-base"
+          >
+            <Button
+              variant="outline"
+              size="icon"
+              className="active:bg-accent lg:p-5"
+            >
+              <FontAwesomeIcon
+                className="text-[var(--tone-seven)]"
+                icon={faPenToSquare}
+              ></FontAwesomeIcon>
+            </Button>
+          </Link>
+            <Toggle
+              aria-label="Toggle italic"
+              pressed={editMode}
+              onPressedChange={() => setEditMode((prev) => !prev)} // Toggle edit and delete buttons visibility.
+              className="py-4 border-1 border-[var(--tone-four)] w-[70px]"
+            >
+              {editMode ? "Editing" : "Viewing"}
+            </Toggle>
+        </div>
       </div>
       <p className="mt-5 font-normal md:text-lg lg:text-xl px-2">
         {" "}
@@ -61,6 +107,9 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
             newYear={firstBlogPosts.includes(blogPost)} // Return newYear is true if this is the first blog post of the year.
             key={blogPost.id}
             blogPostData={blogPost}
+            editMode={editMode}
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
           />
         ))}
       </div>

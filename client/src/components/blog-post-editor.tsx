@@ -3,29 +3,74 @@ import { ChangeEvent, FC, useEffect, useState } from "react";
 import BreadCrumbs from "@/components/ui/breadcrumbs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { addBlogPost } from "@/actions/blog-post-action";
+import {
+  addBlogPost,
+  editBlogPost,
+  getBlogPostById,
+} from "@/actions/blog-post-action";
 import Link from "next/link";
 import Image from "next/image";
-import AddBlogPostButton from "./ui/add-blog-post-button";
+import BlogPostEditorButton from "./ui/blog-post-editor-button";
 import { useActionState } from "react";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 const BlogPostEditor: FC = () => {
-  // Track whether the server action of blog creation is successful or not.
-  const initialState = { success: false, message: "" };
-  const [state, formAction] = useActionState(addBlogPost, initialState);
+  // If editing an existing post as a result of clicking the edit button on the blog page.
+  const searchParams = useSearchParams();
+  const isEditing = searchParams.get("editing") === "true";
+  const postIdToBeEdited = searchParams.get("id");
 
-  // Display a toast depending on the status of the server action of blog creation
+  useEffect(() => {
+    if (isEditing && postIdToBeEdited) {
+      getBlogPostById(Number(postIdToBeEdited)).then((result) => {
+        if (result.data) {
+          setTitle(result.data.title);
+          setDescription(result.data.description);
+          setContent(result.data.content);
+        }
+      });
+    }
+  }, [isEditing, postIdToBeEdited]);
+
+  // Track state of the input values
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
+
+  // This determines whether or not the formAction will be the addBlog or editBlog server action.
+  const handleBlogPost = async (
+    prevState: { success: boolean; message: string },
+    formData: FormData
+  ) => {
+
+    if (isEditing) {
+      return await editBlogPost(
+        initialState,
+        Number(postIdToBeEdited),
+        formData
+      );
+    } else {
+      return await addBlogPost(initialState, formData);
+    }
+  };
+
+  // Track whether the server action of blog update or creation is successful or not.
+  const initialState = { success: false, message: "" };
+
+  const [state, formAction] = useActionState(handleBlogPost, initialState);
+
+  // Display a toast depending on the status of the server action of blog post
   useEffect(() => {
     if (state.success) {
       toast.success("Success!", {
-        description: "Blog Post Creation Successful",
+        description: `${state.message}`,
         action: { label: "Dismiss", onClick: () => {} },
       });
       setImagePreviewUrl(""); // Reset imagepreviewurl so it doesnt linger
     } else if (state.message && !state.success) {
       toast.error("Error!", {
-        description: "Something went wrong with the creation process.",
+        description: `${state.message}`,
         action: { label: "Dismiss", onClick: () => {} },
       });
       setImagePreviewUrl(""); // Reset imagepreviewurl so it doesnt linger
@@ -48,6 +93,7 @@ const BlogPostEditor: FC = () => {
       <BreadCrumbs></BreadCrumbs>
       <h1 className="mt-5 text-2xl">Post Editor</h1>
       {/* Form */}
+      {/* On submission, automatically calls the formAction and pass the formData to it */}
       <form action={formAction} className="mt-5">
         <div className="flex flex-col gap-y-3">
           <label className="font-medium" htmlFor="title">
@@ -60,6 +106,8 @@ const BlogPostEditor: FC = () => {
             id="title"
             placeholder="Agentic AI's Imminency"
             required
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           ></Input>
 
           <label className="font-medium" htmlFor="description">
@@ -71,6 +119,8 @@ const BlogPostEditor: FC = () => {
             id="description"
             placeholder="An investigation into Agentic AI in the modern era."
             required
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           ></Textarea>
           <label className="font-medium" htmlFor="cover-image">
             Cover Image (JPG, PNG, etc.)
@@ -121,9 +171,11 @@ const BlogPostEditor: FC = () => {
             id="content"
             placeholder="# CommonMark-Style Markdown Here."
             required
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
           ></Textarea>
 
-          <AddBlogPostButton></AddBlogPostButton>
+          <BlogPostEditorButton isEditing={isEditing}></BlogPostEditorButton>
         </div>
       </form>
     </div>
