@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { FC } from "react";
+import { FC, Fragment } from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -39,7 +39,7 @@ const BreadCrumbs: FC = () => {
           ></FontAwesomeIcon>
         </Link>
       ) : (
-        <></>
+        <Fragment></Fragment>
       )}
       {formattedPathNames.map((element) => {
         // If current pathname element is the last element of pathNames array, do not render as a link.
@@ -49,7 +49,7 @@ const BreadCrumbs: FC = () => {
             {element}{" "}
           </p>
         ) : (
-          <>
+          <Fragment>
             <Link
               key={element}
               href={`/${element}`}
@@ -57,8 +57,8 @@ const BreadCrumbs: FC = () => {
             >
               {element}{" "}
             </Link>
-            <p className="text-xs font-medium md:text-sm"> / </p>
-          </>
+            <p key={element} className="text-xs font-medium md:text-sm"> / </p>
+          </Fragment>
         );
       })}
     </div>
