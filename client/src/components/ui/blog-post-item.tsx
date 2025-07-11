@@ -3,7 +3,8 @@ import { FC, useEffect, useState } from "react";
 import { generateSlug, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
-import { Button } from "./button";
+import BlogItemEditButton from "./blog-item-edit-button";
+import BlogItemDeleteButton from "./blog-item-delete-button";
 
 interface Props {
   blogPostData: BlogPostDataType;
@@ -76,26 +77,8 @@ const BlogPostItem: FC<Props> = ({
               ${editMode ? "flex" : "hidden"}
               ${buttonsDisplayStatus ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-xs px-2 py-1"
-            onClick={() => {
-              handleEdit(blogPostData.id);
-            }}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            className="text-xs px-2 py-1"
-            onClick={() => {
-              handleDelete(blogPostData.id);
-            }}
-          >
-            Delete
-          </Button>
+          <BlogItemEditButton id={blogPostData.id} handleEdit={handleEdit}></BlogItemEditButton>
+          <BlogItemDeleteButton id={blogPostData.id} handleEdit={handleDelete}></BlogItemDeleteButton>
         </div>
       </div>
     </div>
