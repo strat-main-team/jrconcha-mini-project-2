@@ -15,49 +15,55 @@ const BreadCrumbs: FC = () => {
   // Do not include the / at the beginning of /blog/post-editor for example.
   const pathNames: Array<string> = pathName.slice(1).split("/");
 
-  // This just converts post-editor to Post Editor, remove the "-" and uppercase each letter of the word.
-  const formattedPathNames = pathNames.map((element) => {
-    const formattedElement = element
+  // converts slug post-editor to label Post Editor, return array of objects {slug, label}
+  const pathNamesObject = pathNames.map((pathName) => {
+    const formattedElement = pathName
       .split("-")
-      .filter((element) => isNaN(Number(element)) === true) // Remove the Number Part, for the purpose of blog breadcrumbs
+      .filter((pathName) => isNaN(Number(pathName)) === true) // Remove the Number Part, for the purpose of blog breadcrumbs
       .map((word) => capitalizeFirstLetter(word))
       .join(" ");
-    return formattedElement;
-  });
+
+    return {slug: pathName, label: formattedElement };
+  }, []);
 
   return (
     <div className="flex gap-x-2 justify-items-start">
-      {formattedPathNames.length > 1 ? (
+      {pathNamesObject.length > 1 ? (
         <Link
           className="flex items-center justify-center h-[12px] w-[12px] md:h-[20px] md:w-[20px] mr-2"
-          href={`/${pathNames[pathNames.length - 2]}`}
+          href={`/${pathNamesObject[pathNamesObject.length - 2].slug}`} // Just go back to the previous page.
         >
           <FontAwesomeIcon
             icon={faArrowLeft}
             className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl"
-
           ></FontAwesomeIcon>
         </Link>
       ) : (
         <Fragment></Fragment>
       )}
-      {formattedPathNames.map((element) => {
+      {pathNamesObject.map((pathNameObject) => {
         // If current pathname element is the last element of pathNames array, do not render as a link.
-        return element === formattedPathNames[formattedPathNames.length - 1] ? (
-          <p key={element} className="text-xs font-medium md:text-sm ">
+        return pathNameObject === pathNamesObject[pathNamesObject.length - 1] ? (
+          <p key={pathNameObject.label} className="text-xs font-medium md:text-sm ">
             {" "}
-            {element}{" "}
+            {pathNameObject.label}{" "}
           </p>
         ) : (
-          <Fragment key={element}>
+          <Fragment key={pathNameObject.label}>
             <Link
-              key={element}
-              href={`/${element}`}
+              key={pathNameObject.label}
+              href={`/${pathNameObject.slug}`}
               className="text-xs font-normal underline underline-offset-2 hover:drop-shadow-[0_0_3px_var(--foreground)] duration-150 md:text-sm"
             >
-              {element}{" "}
+              {pathNameObject.label}{" "}
             </Link>
-            <p key={`text-${element}`} className="text-xs font-medium md:text-sm"> / </p>
+            <p
+              key={`text-${pathNameObject}`}
+              className="text-xs font-medium md:text-sm"
+            >
+              {" "}
+              /{" "}
+            </p>
           </Fragment>
         );
       })}
