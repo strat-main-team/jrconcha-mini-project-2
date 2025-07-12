@@ -153,6 +153,7 @@ const CommentContentArea: FC<{ post_id: number; path: string }> = ({
         action: { label: "Dismiss", onClick: () => {} },
       });
     }
+    setTextComment(""); // Reset after posting.
     setPending(false);
 
     // console.log(post_id , path, textComment); // TEST
