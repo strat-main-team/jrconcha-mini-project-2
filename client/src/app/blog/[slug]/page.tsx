@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { getBlogPostById, getBlogCommentsByPostID } from "@/actions/blog-post-action";
+import { getBlogPostById } from "@/actions/blog-post-action";
+import { getBlogCommentsByPostID } from "@/actions/comment-action";
 import BlogPostContent from "@/components/blog-post-content";
 import BlogInfo from "@/components/blog-info";
 import BlogComment from "@/components/blog-comment";

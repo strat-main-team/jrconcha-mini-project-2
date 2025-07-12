@@ -1,9 +1,15 @@
 "use client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { CommentDataType } from "@/types/BlogPostDataType";
 import { FC, Fragment, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
-import { addComment } from "@/actions/blog-post-action";
+import { addComment, deleteComment } from "@/actions/comment-action";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 
@@ -13,6 +19,12 @@ interface Props {
 }
 
 const BlogComment: FC<Props> = ({ comments, post_id }) => {
+  const [path, setPath] = useState("");
+  const fullPathName = usePathname();
+  useEffect(() => {
+    setPath(fullPathName);
+  }, [fullPathName]);
+
   console.log(comments); // >> TEST <<
   return (
     <section className="mt-10">
@@ -26,28 +38,57 @@ const BlogComment: FC<Props> = ({ comments, post_id }) => {
           </p>
         </div>
       ) : (
-        <Comments comments={comments}></Comments>
+        <Comments comments={comments} path={path}></Comments>
       )}
 
-      <CommentContentArea post_id={post_id}></CommentContentArea>
+      <CommentContentArea post_id={post_id} path={path}></CommentContentArea>
     </section>
   );
 };
 
 export default BlogComment;
 
-const Comments: FC<{ comments: Array<CommentDataType> }> = ({ comments }) => {
+const Comments: FC<{ comments: Array<CommentDataType>; path: string }> = ({
+  comments,
+  path,
+}) => {
   return (
     <div className="flex flex-col gap-y-3 mt-5">
       {comments.map((comment) => {
-        return <Comment key={comment.id} commentData={comment}></Comment>;
+        return (
+          <Comment key={comment.id} commentData={comment} path={path}></Comment>
+        );
       })}
     </div>
   );
 };
 
-const Comment: FC<{ commentData: CommentDataType }> = ({ commentData }) => {
-  const [content, setContent] = useState(commentData.comment);
+const Comment: FC<{ commentData: CommentDataType; path: string }> = ({
+  commentData,
+  path,
+}) => {
+  const [content] = useState(commentData.comment);
+  const [id] = useState(commentData.id);
+  const [pending, setPending] = useState(false);
+
+  const handleDelete = async () => {
+    setPending(true);
+    const response = await deleteComment(id, path);
+    if (response.success) {
+      toast.success("Success!", {
+        description: `${response.message}`,
+        action: { label: "Dismiss", onClick: () => {} },
+      });
+    } else if (response.message && !response.success) {
+      toast.error("Error!", {
+        description: `${response.message}`,
+        action: { label: "Dismiss", onClick: () => {} },
+      });
+    }
+    setPending(false);
+
+    // console.log(post_id , path, textComment); // TEST
+  };
 
   return (
     <div className="rounded-xl border p-4 bg-[var(--tone-two)] shadow-sm">
@@ -65,21 +106,38 @@ const Comment: FC<{ commentData: CommentDataType }> = ({ commentData }) => {
             </span>
           </div>
           <p className="mt-1 text-sm text-[var(--tone-six)]">{content}</p>
+          <div className="flex justify-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <button className="p-1 bg-accent rounded-sm text-lg">⋮</button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem>Edit</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive" onClick={handleDelete}>
+                  {pending ? (
+                    <Fragment>
+                      <Loader2Icon className="animate-spin mr-2" />
+                      Please Wait
+                    </Fragment>
+                  ) : (
+                    "Delete"
+                  )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-const CommentContentArea: FC<{ post_id: number }> = ({ post_id }) => {
+const CommentContentArea: FC<{ post_id: number; path: string }> = ({
+  post_id,
+  path,
+}) => {
   const [textComment, setTextComment] = useState("");
-  const [path, setPath] = useState("");
-  const fullPathName = usePathname();
   const [pending, setPending] = useState(false);
-
-  useEffect(() => {
-    setPath(fullPathName);
-  }, [fullPathName]);
 
   const handleSubmit = async () => {
     setPending(true);
