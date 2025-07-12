@@ -5,13 +5,12 @@ import BlogPostContent from "@/components/blog-post-content";
 import BlogInfo from "@/components/blog-info";
 import BlogCommentBlock from "@/components/blog-comment";
 
-interface BlogPostPageProps {
+export default async function BlogPostPage({
+  params,
+}: {
   params: { slug: string };
-}
-
-export default async function BlogPostPage({ params }: BlogPostPageProps){
-  const slug = await params.slug
-  const id = Number(slug.split("-")[0]);
+}) {
+  const id = Number(params.slug.split("-")[0]);
   const blogResult = await getBlogPostById(id);
   const commentResult = await getCommentsByPostID(id);
   if (!blogResult.success) return notFound(); // Type Guard
