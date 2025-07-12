@@ -319,7 +319,7 @@ const EditCommentButtons: FC<{
   };
 
   return (
-    <div className="flex gap-2 justify-end mt-2">
+    <div className="flex gap-2 justify-end mt-4">
       <Button
         className="p-2 text-xs"
         onChange={() => {}}
