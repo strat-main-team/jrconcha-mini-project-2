@@ -10,7 +10,8 @@ interface BlogPostPageProps {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps){
-  const id = Number(params.slug.split("-")[0]);
+  const slug = await params.slug
+  const id = Number(slug.split("-")[0]);
   const blogResult = await getBlogPostById(id);
   const commentResult = await getCommentsByPostID(id);
   if (!blogResult.success) return notFound(); // Type Guard
