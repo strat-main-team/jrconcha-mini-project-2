@@ -16,6 +16,8 @@ interface Props {
 }
 
 const BlogPostsList: FC<Props> = ({ blogPosts }) => {
+  const [sortedBlogPosts, setSortedBlogPosts] = useState<Array<BlogPostDataType>>([])
+
   // Handle the event where the delete button is clicked
   const handleDelete = (id: number) => {
     getBlogPostById(id).then((result) => {
@@ -46,6 +48,9 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
     const sortedBlogPosts = [...blogPosts].sort((a, b) => {
       return a.created_at.getTime() - b.created_at.getTime();
     });
+
+    // Update blog posts to be displayed
+    setSortedBlogPosts(sortedBlogPosts);
 
     const seenYears = new Set<number>();
     const firstPostsByYear: Array<BlogPostDataType> = [];
@@ -102,7 +107,7 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
 
       <div className="w-full flex flex-col mt-8">
         {/* For each blog post in DB, create a blog post item */}
-        {blogPosts.map((blogPost) => (
+        {sortedBlogPosts.map((blogPost) => (
           <BlogPostItem
             newYear={firstBlogPosts.includes(blogPost)} // Return newYear is true if this is the first blog post of the year.
             key={blogPost.id}
