@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getBlogPostById } from "@/actions/blog-post-action";
-import { getBlogCommentsByPostID } from "@/actions/comment-action";
+import { getCommentsByPostID } from "@/actions/comment-action";
 import BlogPostContent from "@/components/blog-post-content";
 import BlogInfo from "@/components/blog-info";
 import BlogComment from "@/components/blog-comment";
@@ -12,7 +12,7 @@ export default async function BlogPostPage({
 }) {
   const id = Number(params.slug.split("-")[0]);
   const blogResult = await getBlogPostById(id);
-  const commentResult = await getBlogCommentsByPostID(id);
+  const commentResult = await getCommentsByPostID(id);
   if (!blogResult.success) return notFound(); // Type Guard
   
   return (

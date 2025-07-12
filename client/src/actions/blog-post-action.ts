@@ -91,7 +91,7 @@ export const addBlogPost = async (
 };
 
 // Put Methods
-export const editBlogPost = async (
+export const updateBlogPost = async (
   prevState: { success: boolean; message: string }, // Required by the useActionState, because we're returning {success, message}
   id: number,
   formData: FormData

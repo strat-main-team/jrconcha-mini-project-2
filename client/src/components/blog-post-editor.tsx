@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   addBlogPost,
-  editBlogPost,
+  updateBlogPost,
   getBlogPostById,
 } from "@/actions/blog-post-action";
 import Link from "next/link";
@@ -45,7 +45,7 @@ const BlogPostEditor: FC = () => {
   ) => {
 
     if (isEditing) {
-      return await editBlogPost(
+      return await updateBlogPost(
         initialState,
         Number(postIdToBeEdited),
         formData

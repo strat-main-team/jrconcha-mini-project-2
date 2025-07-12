@@ -5,7 +5,7 @@ import { db } from "@/db/drizzle";
 import {comments } from "@/db/schema";
 
 // Get Methods
-export const getBlogCommentsByPostID = async (post_id: number) => {
+export const getCommentsByPostID = async (post_id: number) => {
   const data = await db
     .select()
     .from(comments)
