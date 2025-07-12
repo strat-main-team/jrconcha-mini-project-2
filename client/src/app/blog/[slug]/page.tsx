@@ -5,11 +5,11 @@ import BlogPostContent from "@/components/blog-post-content";
 import BlogInfo from "@/components/blog-info";
 import BlogCommentBlock from "@/components/blog-comment";
 
-export default async function BlogPostPage({
-  params,
-}: {
+interface BlogPostPageProps {
   params: { slug: string };
-}) {
+}
+
+export default async function BlogPostPage({ params }: BlogPostPageProps){
   const id = Number(params.slug.split("-")[0]);
   const blogResult = await getBlogPostById(id);
   const commentResult = await getCommentsByPostID(id);
