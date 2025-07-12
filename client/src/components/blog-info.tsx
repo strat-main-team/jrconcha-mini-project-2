@@ -2,7 +2,7 @@ import { FC, Fragment } from "react";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
-import BreadCrumbs from "./breadcrumbs";
+import BreadCrumbs from "./ui/breadcrumbs";
 
 interface Props {
   blogPostData: BlogPostDataType;

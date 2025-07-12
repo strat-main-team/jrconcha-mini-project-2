@@ -8,6 +8,41 @@
       "when": 1752121794629,
       "tag": "0000_whole_eternity",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1752226024338,
+      "tag": "0001_omniscient_captain_cross",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752226344311,
+      "tag": "0002_tiresome_peter_parker",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1752226460492,
+      "tag": "0003_lucky_invaders",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1752226812296,
+      "tag": "0004_woozy_sleeper",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1752275865118,
+      "tag": "0005_ambiguous_zodiak",
+      "breakpoints": true
     }
   ]
 }

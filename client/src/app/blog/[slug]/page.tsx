@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import { getBlogPostById } from "@/actions/blog-post-action";
-import BlogPostContent from "@/components/ui/blog-post-content";
-import BlogInfo from "@/components/ui/blog-info";
-import BlogComment from "@/components/ui/blog-comment";
+import { getBlogPostById, getBlogCommentsByPostID } from "@/actions/blog-post-action";
+import BlogPostContent from "@/components/blog-post-content";
+import BlogInfo from "@/components/blog-info";
+import BlogComment from "@/components/blog-comment";
 
 export default async function BlogPostPage({
   params,
@@ -10,14 +10,15 @@ export default async function BlogPostPage({
   params: { slug: string };
 }) {
   const id = Number(params.slug.split("-")[0]);
-  const result = await getBlogPostById(id);
-  if (!result.success) return notFound(); // Type Guard
+  const blogResult = await getBlogPostById(id);
+  const commentResult = await getBlogCommentsByPostID(id);
+  if (!blogResult.success) return notFound(); // Type Guard
   
   return (
     <section>
-      <BlogInfo blogPostData={result.data}></BlogInfo>
-      <BlogPostContent markdown={result.data.content}></BlogPostContent>
-      <BlogComment></BlogComment>
+      <BlogInfo blogPostData={blogResult.data}></BlogInfo>
+      <BlogPostContent markdown={blogResult.data.content}></BlogPostContent>
+      <BlogComment post_id={blogResult.data.id} comments={commentResult}></BlogComment>
     </section>
   );
 }

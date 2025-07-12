@@ -49,7 +49,7 @@ const BreadCrumbs: FC = () => {
             {element}{" "}
           </p>
         ) : (
-          <Fragment>
+          <Fragment key={element}>
             <Link
               key={element}
               href={`/${element}`}
@@ -57,7 +57,7 @@ const BreadCrumbs: FC = () => {
             >
               {element}{" "}
             </Link>
-            <p key={element} className="text-xs font-medium md:text-sm"> / </p>
+            <p key={`text-${element}`} className="text-xs font-medium md:text-sm"> / </p>
           </Fragment>
         );
       })}

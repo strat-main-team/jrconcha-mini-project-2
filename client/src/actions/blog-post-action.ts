@@ -2,13 +2,20 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db/drizzle";
-import { blogPost } from "@/db/schema";
+import { blogPost, comments } from "@/db/schema";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
 // import { BlogPostDataType } from "@/types/BlogPostDataType";
 
+export const getBlogCommentsByPostID = async (post_id: number) => {
+  const data = await db
+    .select()
+    .from(comments)
+    .where(eq(comments.post_id, post_id));
+  return data;
+};
+
 export const getBlogPosts = async () => {
   const data = await db.select().from(blogPost);
-  if (!data) console.log("Database is empty.");
   return data;
 };
 
@@ -54,17 +61,25 @@ export const getBlogPostById = async (
   }
 };
 
-// export async function generateMetadata({ params }) {
-//   const id = Number(params.slug.split("-")[0]);
-//   const blogPost = (await getBlogPostById(id)) as BlogPostDataType;
-
-//   if (blogPost) {
-//     return {
-//       title: blogPost.title,
-//       description: blogPost.description,
-//     };
-//   }
-// }
+export const addComment = async (
+  post_id: number,
+  pathToRevalidate: string,
+  commentText: string
+) => {
+  try {
+    // throw new Error("Error") // Test
+    await db.insert(comments).values({
+      comment: commentText,
+      post_id: post_id,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+    revalidatePath(pathToRevalidate);
+    return { success: true, message: "Commment added successfully." };
+  } catch (e) {
+    return { success: false, message: `Failed to add comment. ${e}` };
+  }
+};
 
 export const addBlogPost = async (
   prevState: { success: boolean; message: string }, // Required by the useActionState, because we're returning {success, message}
@@ -133,7 +148,10 @@ export const editBlogPost = async (
       message: "Blog post updated successfully.",
     };
   } catch (e) {
-    return { success: false, message: `Something went wrong during the update ${e}` };
+    return {
+      success: false,
+      message: `Something went wrong during the update ${e}`,
+    };
   }
 };
 
@@ -157,3 +175,15 @@ export const deleteBlogPost = async (id: number) => {
 
 //   revalidatePath("/");
 // };
+
+// export async function generateMetadata({ params }) {
+//   const id = Number(params.slug.split("-")[0]);
+//   const blogPost = (await getBlogPostById(id)) as BlogPostDataType;
+
+//   if (blogPost) {
+//     return {
+//       title: blogPost.title,
+//       description: blogPost.description,
+//     };
+//   }
+// }

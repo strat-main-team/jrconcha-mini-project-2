@@ -8,3 +8,12 @@ export type BlogPostDataType = {
   description: string;
   content: string;
 };
+
+export type CommentDataType = {
+  id: number,
+  comment: string,
+  post_id: number,
+  parent_comment_id: number | null,
+  created_at: Date,
+  updated_at: Date,
+}
