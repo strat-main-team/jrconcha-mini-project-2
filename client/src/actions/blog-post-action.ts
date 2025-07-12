@@ -140,26 +140,3 @@ export const deleteBlogPost = async (id: number) => {
 
   revalidatePath("/blog");
 };
-
-// export const toggleBlogPost = async (id: number) => {
-//   await db
-//     .update(blogPost)
-//     .set({
-//       done: not(blogPost.done),
-//     })
-//     .where(eq(blogPost.id, id));
-
-//   revalidatePath("/");
-// };
-
-// export async function generateMetadata({ params }) {
-//   const id = Number(params.slug.split("-")[0]);
-//   const blogPost = (await getBlogPostById(id)) as BlogPostDataType;
-
-//   if (blogPost) {
-//     return {
-//       title: blogPost.title,
-//       description: blogPost.description,
-//     };
-//   }
-// }

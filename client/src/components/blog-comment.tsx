@@ -17,7 +17,8 @@ import {
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 import { Textarea } from "./ui/textarea";
-import { formatCommentDate } from "@/lib/utils";
+import { getRelativeTimeWithExactTooltip } from "@/lib/utils";
+import Image from "next/image"
 
 interface Props {
   comments: CommentDataType[];
@@ -36,7 +37,7 @@ const BlogCommentBlock: FC<Props> = ({ comments, post_id }) => {
   console.log(comments); // >> TEST <<
   return (
     <section className="mt-10">
-      <h1 className="text-2xl font-semibold">Comments</h1>
+      <h1 className=" text-3xl lg:text-4xl 3xl-text-6xl font-semibold">Comments</h1>
       <hr className="mt-2 mb-2"></hr>
       {comments.length === 0 ? (
         <div className="flex flex-col gap-2 mt-5">
@@ -90,6 +91,9 @@ const Comment: FC<{
   isAlreadyEditing: boolean;
   updateIsAlreadyEditing: (bool: boolean) => void;
 }> = ({ commentData, path, isAlreadyEditing, updateIsAlreadyEditing }) => {
+  const { relative: createdAt_relative, full: createdAt_full } = getRelativeTimeWithExactTooltip(commentData.created_at);
+  const { relative: updatedAt_relative, full: updatedAt_full } = getRelativeTimeWithExactTooltip(commentData.updated_at);
+
   const [comment_id] = useState(commentData.id);
   const [serverActionIsPending, setServerActionIsPending] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -163,30 +167,37 @@ const Comment: FC<{
 
   return (
     <div className="rounded-xl border p-4 bg-[var(--tone-two)] shadow-sm">
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2 md:gap-3">
         {/* Placeholder avatar */}
-        <div className="w-10 h-10 rounded-full bg-[var(--tone-three)] flex-shrink-0" />
+        <div className="w-7 h-7 md:w-10 md:h-10 min-w-[24px] md:min-w-[32px] relative">
+          <Image
+            src="/picture.png"
+            alt="Avatar"
+            fill // Use position:absolute to fill container, must be positioned relative to a positioned relative ancestor.
+            className="rounded-full object-cover"
+            sizes="small"
+          />
+        </div>
 
         <div className="flex-1">
           <div className="flex justify-between items-center">
-            <h4 className="font-semibold text-sm">{"Anonymous"}</h4>
+            <h4 className="font-semibold text-sm md:text-base">{"Anonymous"}</h4>
             <div className="flex flex-col items-end">
               {commentData.updated_at.toLocaleString() ===
               commentData.created_at.toLocaleString() ? (
-                <span className="text-xs text-[var(--tone-six)]">
+                <span className="text-[9px] text-[var(--tone-six)]" title={createdAt_full}>
                   {" "}
-                  {`Posted: ${formatCommentDate(commentData.created_at)}`}
+                  {`Posted ${createdAt_relative}`}
+                  
                 </span>
               ) : (
                 <Fragment>
-                  <span className="text-xs text-[var(--tone-six)]">
+                  <span className="text-[9px] text-[var(--tone-six)]" title={createdAt_full}>
                     {" "}
-                    {`Posted: ${formatCommentDate(commentData.created_at)}`}
+                    {`Posted ${createdAt_relative}` }
                   </span>
-                  <span className="text-xs text-[var(--tone-six)]">
-                    {`Last Edited: ${formatCommentDate(
-                      commentData.updated_at
-                    )}`}
+                  <span className="text-[9px] text-[var(--tone-six)]" title={updatedAt_full}>
+                    {`Edited ${updatedAt_relative}`}
                   </span>
                 </Fragment>
               )}
@@ -235,7 +246,7 @@ const CommentBody: FC<{
     <Fragment>
       {isEditing ? (
         <Textarea
-          className="w-full mt-1 h-[100px] max-h-[150px]"
+          className="w-full text-xs md:text-sm mt-1 h-[100px] max-h-[150px]"
           value={currentlyEditedContent}
           onChange={(e) => {
             handleChange(e.target.value);
@@ -244,7 +255,7 @@ const CommentBody: FC<{
           {" "}
         </Textarea>
       ) : (
-        <p className="mt-1 text-sm text-[var(--tone-six)]">{content}</p>
+        <p className="mt-1 text-xs md:text-sm text-[var(--tone-six)]">{content}</p>
       )}
 
       {isEditing ? (
