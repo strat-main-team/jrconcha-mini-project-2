@@ -1,11 +1,11 @@
 "use client";
-
 import { CommentDataType } from "@/types/BlogPostDataType";
-import { FC, useEffect, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
 import { addComment } from "@/actions/blog-post-action";
 import { toast } from "sonner";
+import { Loader2Icon } from "lucide-react";
 
 interface Props {
   comments: CommentDataType[];
@@ -75,12 +75,14 @@ const CommentContentArea: FC<{ post_id: number }> = ({ post_id }) => {
   const [textComment, setTextComment] = useState("");
   const [path, setPath] = useState("");
   const fullPathName = usePathname();
+  const [pending, setPending] = useState(false);
 
   useEffect(() => {
     setPath(fullPathName);
   }, [fullPathName]);
 
   const handleSubmit = async () => {
+    setPending(true);
     const response = await addComment(post_id, path, textComment);
     if (response.success) {
       toast.success("Success!", {
@@ -93,6 +95,7 @@ const CommentContentArea: FC<{ post_id: number }> = ({ post_id }) => {
         action: { label: "Dismiss", onClick: () => {} },
       });
     }
+    setPending(false);
 
     // console.log(post_id , path, textComment); // TEST
   };
@@ -112,7 +115,16 @@ const CommentContentArea: FC<{ post_id: number }> = ({ post_id }) => {
         required
       />
       <div className="flex justify-end my-4">
-        <Button onClick={handleSubmit}>Post Comment</Button>
+        <Button onClick={handleSubmit} disabled={pending}>
+          {pending ? (
+            <Fragment>
+              <Loader2Icon className="animate-spin mr-2" />
+              Please Wait
+            </Fragment>
+          ) : (
+            "Post Comment"
+          )}
+        </Button>
       </div>
     </div>
   );
