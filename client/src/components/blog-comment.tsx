@@ -40,7 +40,7 @@ const BlogCommentBlock: FC<Props> = ({ comments, post_id }) => {
       <h1 className=" text-3xl lg:text-4xl 3xl-text-6xl font-semibold">
         Comments
       </h1>
-      <hr className="mt-2 mb-2"></hr>
+      <hr className="mt-2 mb-2 border-t border-[var(--tone-four)]"></hr>
       {comments.length === 0 ? (
         <div className="flex flex-col gap-2 mt-5">
           <p className="text-base font-medium text-center">No comments yet.</p>
