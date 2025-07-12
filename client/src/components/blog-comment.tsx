@@ -9,18 +9,26 @@ import { CommentDataType } from "@/types/BlogPostDataType";
 import { FC, Fragment, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
-import { addComment, deleteComment } from "@/actions/comment-action";
+import {
+  addComment,
+  deleteComment,
+  updateComment,
+} from "@/actions/comment-action";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
+import { Textarea } from "./ui/textarea";
+import { formatCommentDate } from "@/lib/utils";
 
 interface Props {
   comments: CommentDataType[];
   post_id: number;
 }
 
-const BlogComment: FC<Props> = ({ comments, post_id }) => {
+const BlogCommentBlock: FC<Props> = ({ comments, post_id }) => {
+  const [isAlreadyEditing, setIsAlreadyEditing] = useState(false);
   const [path, setPath] = useState("");
   const fullPathName = usePathname();
+
   useEffect(() => {
     setPath(fullPathName);
   }, [fullPathName]);
@@ -38,7 +46,12 @@ const BlogComment: FC<Props> = ({ comments, post_id }) => {
           </p>
         </div>
       ) : (
-        <Comments comments={comments} path={path}></Comments>
+        <Comments
+          comments={comments}
+          path={path}
+          isAlreadyEditing={isAlreadyEditing}
+          updateIsAlreadyEditing={setIsAlreadyEditing}
+        ></Comments>
       )}
 
       <CommentContentArea post_id={post_id} path={path}></CommentContentArea>
@@ -46,34 +59,72 @@ const BlogComment: FC<Props> = ({ comments, post_id }) => {
   );
 };
 
-export default BlogComment;
+export default BlogCommentBlock;
 
-const Comments: FC<{ comments: Array<CommentDataType>; path: string }> = ({
-  comments,
-  path,
-}) => {
+const Comments: FC<{
+  comments: Array<CommentDataType>;
+  path: string;
+  isAlreadyEditing: boolean;
+  updateIsAlreadyEditing: (bool: boolean) => void;
+}> = ({ comments, path, isAlreadyEditing, updateIsAlreadyEditing }) => {
   return (
     <div className="flex flex-col gap-y-3 mt-5">
       {comments.map((comment) => {
         return (
-          <Comment key={comment.id} commentData={comment} path={path}></Comment>
+          <Comment
+            key={comment.id}
+            commentData={comment}
+            path={path}
+            isAlreadyEditing={isAlreadyEditing}
+            updateIsAlreadyEditing={updateIsAlreadyEditing}
+          ></Comment>
         );
       })}
     </div>
   );
 };
 
-const Comment: FC<{ commentData: CommentDataType; path: string }> = ({
-  commentData,
-  path,
-}) => {
-  const [content] = useState(commentData.comment);
-  const [id] = useState(commentData.id);
-  const [pending, setPending] = useState(false);
+const Comment: FC<{
+  commentData: CommentDataType;
+  path: string;
+  isAlreadyEditing: boolean;
+  updateIsAlreadyEditing: (bool: boolean) => void;
+}> = ({ commentData, path, isAlreadyEditing, updateIsAlreadyEditing }) => {
+  const [comment_id] = useState(commentData.id);
+  const [serverActionIsPending, setServerActionIsPending] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleDelete = async () => {
-    setPending(true);
-    const response = await deleteComment(id, path);
+  // handle when cancel button is clicked while editing.
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    updateIsAlreadyEditing(false);
+  };
+
+  // handle clicks on the edit button on dropdown
+  const handleEditClick = () => {
+    if (isAlreadyEditing)
+      toast("Cannot edit comment.", {
+        description:
+          "Already editing a comment. Please finish editing the current comment.",
+      });
+    else {
+      setIsEditing(true);
+      updateIsAlreadyEditing(true);
+    }
+  };
+
+  // handle the updating of the comment
+  const handleUpdate = async (updatedComment: string) => {
+    setServerActionIsPending(true);
+    if (updatedComment === "") {
+      toast.error("Error!", {
+        description: `Comment must not be empty`,
+        action: { label: "Dismiss", onClick: () => {} },
+      });
+      setServerActionIsPending(false);
+      return;
+    }
+    const response = await updateComment(comment_id, updatedComment, path);
     if (response.success) {
       toast.success("Success!", {
         description: `${response.message}`,
@@ -85,7 +136,27 @@ const Comment: FC<{ commentData: CommentDataType; path: string }> = ({
         action: { label: "Dismiss", onClick: () => {} },
       });
     }
-    setPending(false);
+    setIsEditing(false);
+    updateIsAlreadyEditing(false);
+    setServerActionIsPending(false);
+  };
+
+  // handle the deleting of the comment
+  const handleDelete = async () => {
+    setServerActionIsPending(true);
+    const response = await deleteComment(comment_id, path);
+    if (response.success) {
+      toast.success("Success!", {
+        description: `${response.message}`,
+        action: { label: "Dismiss", onClick: () => {} },
+      });
+    } else if (response.message && !response.success) {
+      toast.error("Error!", {
+        description: `${response.message}`,
+        action: { label: "Dismiss", onClick: () => {} },
+      });
+    }
+    setServerActionIsPending(false);
 
     // console.log(post_id , path, textComment); // TEST
   };
@@ -99,35 +170,182 @@ const Comment: FC<{ commentData: CommentDataType; path: string }> = ({
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <h4 className="font-semibold text-sm">{"Anonymous"}</h4>
-            <span className="text-xs text-[var(--tone-six)]">
-              {commentData.created_at
-                ? commentData.created_at.toLocaleString()
-                : "Just now"}
-            </span>
+            <div className="flex flex-col items-end">
+              {commentData.updated_at.toLocaleString() ===
+              commentData.created_at.toLocaleString() ? (
+                <span className="text-xs text-[var(--tone-six)]">
+                  {" "}
+                  {`Posted: ${formatCommentDate(commentData.created_at)}`}
+                </span>
+              ) : (
+                <Fragment>
+                  <span className="text-xs text-[var(--tone-six)]">
+                    {" "}
+                    {`Posted: ${formatCommentDate(commentData.created_at)}`}
+                  </span>
+                  <span className="text-xs text-[var(--tone-six)]">
+                    {`Last Edited: ${formatCommentDate(
+                      commentData.updated_at
+                    )}`}
+                  </span>
+                </Fragment>
+              )}
+            </div>
           </div>
-          <p className="mt-1 text-sm text-[var(--tone-six)]">{content}</p>
-          <div className="flex justify-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <button className="p-1 bg-accent rounded-sm text-lg">⋮</button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem variant="destructive" onClick={handleDelete}>
-                  {pending ? (
-                    <Fragment>
-                      <Loader2Icon className="animate-spin mr-2" />
-                      Please Wait
-                    </Fragment>
-                  ) : (
-                    "Delete"
-                  )}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <CommentBody
+            content={commentData.comment}
+            isEditing={isEditing}
+            serverActionIsPending={serverActionIsPending}
+            handleDelete={handleDelete}
+            handleEditClick={handleEditClick}
+            handleCancelEdit={handleCancelEdit}
+            handleUpdate={handleUpdate}
+          ></CommentBody>
         </div>
       </div>
+    </div>
+  );
+};
+
+const CommentBody: FC<{
+  content: string;
+  isEditing: boolean;
+  serverActionIsPending: boolean;
+  handleEditClick: () => void;
+  handleDelete: () => void;
+  handleCancelEdit: () => void;
+  handleUpdate: (updatedComment: string) => void;
+}> = ({
+  content,
+  isEditing,
+  serverActionIsPending,
+  handleEditClick,
+  handleDelete,
+  handleCancelEdit,
+  handleUpdate,
+}) => {
+  const [currentlyEditedContent, setCurrentlyEditedContent] = useState(content);
+
+  // Handles whenever an input on textarea occurs
+  const handleChange = (text: string) => {
+    setCurrentlyEditedContent(text);
+  };
+
+  return (
+    <Fragment>
+      {isEditing ? (
+        <Textarea
+          className="w-full mt-1 h-[100px] max-h-[150px]"
+          value={currentlyEditedContent}
+          onChange={(e) => {
+            handleChange(e.target.value);
+          }}
+        >
+          {" "}
+        </Textarea>
+      ) : (
+        <p className="mt-1 text-sm text-[var(--tone-six)]">{content}</p>
+      )}
+
+      {isEditing ? (
+        <EditCommentButtons
+          handleCancelEdit={handleCancelEdit}
+          setCurrentlyEditedContent={setCurrentlyEditedContent}
+          content={content}
+          handleUpdate={() => {
+            handleUpdate(currentlyEditedContent);
+          }}
+          updatedComment={currentlyEditedContent}
+          serverActionIsPending={serverActionIsPending}
+        ></EditCommentButtons>
+      ) : (
+        <CommentOptions
+          serverActionIsPending={serverActionIsPending}
+          handleEditClick={handleEditClick}
+          handleDelete={handleDelete}
+        ></CommentOptions>
+      )}
+    </Fragment>
+  );
+};
+
+const EditCommentButtons: FC<{
+  handleCancelEdit: () => void;
+  setCurrentlyEditedContent: (text: string) => void;
+  content: string;
+  handleUpdate: (updatedComment: string) => void;
+  updatedComment: string;
+  serverActionIsPending: boolean;
+}> = ({
+  handleCancelEdit,
+  setCurrentlyEditedContent,
+  content,
+  handleUpdate,
+  updatedComment,
+  serverActionIsPending,
+}) => {
+  const handleCancelEditClick = () => {
+    handleCancelEdit();
+    setCurrentlyEditedContent(content); // If cancelled, just dispose of any changes and return to whatever text it was before editing.
+  };
+
+  return (
+    <div className="flex gap-2 justify-end mt-2">
+      <Button
+        className="p-2 text-xs"
+        onChange={() => {}}
+        onClick={handleCancelEditClick}
+        variant={"secondary"}
+      >
+        {" "}
+        Cancel{" "}
+      </Button>
+      <Button
+        className="p-2 text-xs"
+        onClick={() => {
+          handleUpdate(updatedComment);
+        }}
+      >
+        {serverActionIsPending ? (
+          <Fragment>
+            <Loader2Icon className="animate-spin mr-2" />
+            Please Wait
+          </Fragment>
+        ) : (
+          "Update Comment"
+        )}
+      </Button>
+    </div>
+  );
+};
+
+const CommentOptions: FC<{
+  serverActionIsPending: boolean;
+  handleEditClick: () => void;
+  handleDelete: () => void;
+}> = ({ serverActionIsPending, handleEditClick, handleDelete }) => {
+  return (
+    <div className="flex justify-end">
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <div>
+            <button className="p-1 bg-accent rounded-sm text-lg">⋮</button>
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+          <DropdownMenuItem variant="destructive" onClick={handleDelete}>
+            {serverActionIsPending ? (
+              <Fragment>
+                <Loader2Icon className="animate-spin mr-2" />
+                Please Wait
+              </Fragment>
+            ) : (
+              "Delete"
+            )}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };
@@ -136,12 +354,20 @@ const CommentContentArea: FC<{ post_id: number; path: string }> = ({
   post_id,
   path,
 }) => {
-  const [textComment, setTextComment] = useState("");
-  const [pending, setPending] = useState(false);
+  const [textValue, setTextValue] = useState("");
+  const [serverActionIsPending, setServerActionIsPending] = useState(false);
 
   const handleSubmit = async () => {
-    setPending(true);
-    const response = await addComment(post_id, path, textComment);
+    setServerActionIsPending(true);
+    if (textValue === "") {
+      toast.error("Error!", {
+        description: `Comment must not be empty`,
+        action: { label: "Dismiss", onClick: () => {} },
+      });
+      setServerActionIsPending(false);
+      return;
+    }
+    const response = await addComment(post_id, path, textValue);
     if (response.success) {
       toast.success("Success!", {
         description: `${response.message}`,
@@ -153,8 +379,8 @@ const CommentContentArea: FC<{ post_id: number; path: string }> = ({
         action: { label: "Dismiss", onClick: () => {} },
       });
     }
-    setTextComment(""); // Reset after posting.
-    setPending(false);
+    setTextValue(""); // Reset after posting.
+    setServerActionIsPending(false);
 
     // console.log(post_id , path, textComment); // TEST
   };
@@ -165,17 +391,16 @@ const CommentContentArea: FC<{ post_id: number; path: string }> = ({
         {" "}
         Join the discussion
       </p>
-      <textarea
-        onChange={(e) => setTextComment(e.target.value)}
-        value={textComment}
+      <Textarea
+        onChange={(e) => setTextValue(e.target.value)}
+        value={textValue}
         rows={5}
-        className="bg-White border resize-none border-Light-gray py-2 px-5 rounded-md placeholder:text-start text-Grayish-Blue "
+        className="bg-White border resize-none h-[100px] border-Light-gray py-2 px-5 rounded-md placeholder:text-start text-Grayish-Blue "
         placeholder="Add a comment..."
-        required
       />
       <div className="flex justify-end my-4">
-        <Button onClick={handleSubmit} disabled={pending}>
-          {pending ? (
+        <Button onClick={handleSubmit} disabled={serverActionIsPending}>
+          {serverActionIsPending ? (
             <Fragment>
               <Loader2Icon className="animate-spin mr-2" />
               Please Wait

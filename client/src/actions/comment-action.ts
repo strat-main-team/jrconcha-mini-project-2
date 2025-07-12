@@ -2,7 +2,7 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db/drizzle";
-import {comments } from "@/db/schema";
+import { comments } from "@/db/schema";
 
 // Get Methods
 export const getCommentsByPostID = async (post_id: number) => {
@@ -35,7 +35,25 @@ export const addComment = async (
 };
 
 // Put Methods
-
+export const updateComment = async (
+  comment_id: number,
+  updated_comment: string,
+  pathToRevalidate: string
+) => {
+  try {
+    await db
+      .update(comments)
+      .set({
+        comment: updated_comment,
+        updated_at: new Date(),
+      })
+      .where(eq(comments.id, comment_id));
+    revalidatePath(pathToRevalidate);
+    return { success: true, message: "Commment updated successfully." };
+  } catch (e) {
+    return { success: false, message: `Failed to update comment. ${e}` };
+  }
+};
 
 // Delete Methods
 export const deleteComment = async (

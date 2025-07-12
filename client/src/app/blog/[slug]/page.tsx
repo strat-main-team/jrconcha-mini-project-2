@@ -3,7 +3,7 @@ import { getBlogPostById } from "@/actions/blog-post-action";
 import { getCommentsByPostID } from "@/actions/comment-action";
 import BlogPostContent from "@/components/blog-post-content";
 import BlogInfo from "@/components/blog-info";
-import BlogComment from "@/components/blog-comment";
+import BlogCommentBlock from "@/components/blog-comment";
 
 export default async function BlogPostPage({
   params,
@@ -19,7 +19,7 @@ export default async function BlogPostPage({
     <section>
       <BlogInfo blogPostData={blogResult.data}></BlogInfo>
       <BlogPostContent markdown={blogResult.data.content}></BlogPostContent>
-      <BlogComment post_id={blogResult.data.id} comments={commentResult}></BlogComment>
+      <BlogCommentBlock post_id={blogResult.data.id} comments={commentResult}></BlogCommentBlock>
     </section>
   );
 }

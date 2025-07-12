@@ -29,3 +29,18 @@ export const formatDate = (dateObject: Date) => {
     monthNames[dateObject.getMonth()]
   } ${dateObject.getDay()}, ${dateObject.getFullYear()}`;
 };
+
+
+export function formatCommentDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",       // "July"
+    day: "2-digit",      // "12"
+    year: "numeric",     // "2025"
+    hour: "numeric",     // "8"
+    minute: "2-digit",   // "56"
+    hour12: true,        // "PM"
+  })
+    .format(d).replace("at", "|")
+}
