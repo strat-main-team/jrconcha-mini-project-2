@@ -8,18 +8,22 @@ import BlogCommentBlock from "@/components/blog-comment";
 export default async function BlogPostPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const id = Number(params.slug.split("-")[0]);
+  const slug = (await params).slug; // https://stackoverflow.com/questions/79124951/type-error-in-next-js-route-type-params-id-string-does-not-satis
+  const id = Number(slug.split("-")[0]);
   const blogResult = await getBlogPostById(id);
   const commentResult = await getCommentsByPostID(id);
   if (!blogResult.success) return notFound(); // Type Guard
-  
+
   return (
     <section>
       <BlogInfo blogPostData={blogResult.data}></BlogInfo>
       <BlogPostContent markdown={blogResult.data.content}></BlogPostContent>
-      <BlogCommentBlock post_id={blogResult.data.id} comments={commentResult}></BlogCommentBlock>
+      <BlogCommentBlock
+        post_id={blogResult.data.id}
+        comments={commentResult}
+      ></BlogCommentBlock>
     </section>
   );
 }
