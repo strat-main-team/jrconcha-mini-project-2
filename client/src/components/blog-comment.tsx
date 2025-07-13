@@ -258,12 +258,26 @@ const CommentBody: FC<{
     setCurrentlyEditedContent(text);
   };
 
+  // Handle key events for textarea, when enter is pressed, update the comment, if esc, cancel edit.
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent default Enter behavior (new line)
+      handleUpdate(currentlyEditedContent);
+    } else if (e.key === "Escape") {
+      handleCancelEdit();
+      setCurrentlyEditedContent(content); // // If cancelled, just dispose of any changes and return to whatever text it was before editing.
+    }
+  };
+
   return (
     <Fragment>
       {isEditing ? (
         <Textarea
           className="w-full text-xs md:text-sm mt-1 h-[100px] max-h-[150px] break-all whitespace-pre-line"
           value={currentlyEditedContent}
+          onKeyDown={(e) => {
+            handleKeyDown(e);
+          }}
           onChange={(e) => {
             handleChange(e.target.value);
           }}
@@ -385,6 +399,13 @@ const CommentContentArea: FC<{ post_id: number; path: string }> = ({
 }) => {
   const [textValue, setTextValue] = useState("");
   const [serverActionIsPending, setServerActionIsPending] = useState(false);
+  // Handle key events for textarea, When enter is pressed, add the comment.
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault(); // Prevent default Enter behavior (new line)
+      handleSubmit();
+    }
+  };
 
   const handleSubmit = async () => {
     setServerActionIsPending(true);
@@ -424,6 +445,9 @@ const CommentContentArea: FC<{ post_id: number; path: string }> = ({
         onChange={(e) => setTextValue(e.target.value)}
         value={textValue}
         rows={5}
+        onKeyDown={(e) => {
+          handleKeyDown(e);
+        }}
         maxLength={500}
         className="bg-White border resize-none h-[100px] border-Light-gray py-2 px-5 rounded-md placeholder:text-start text-Grayish-Blue "
         placeholder="Add a comment..."
