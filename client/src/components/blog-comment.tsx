@@ -424,6 +424,7 @@ const CommentContentArea: FC<{ post_id: number; path: string }> = ({
         onChange={(e) => setTextValue(e.target.value)}
         value={textValue}
         rows={5}
+        maxLength={500}
         className="bg-White border resize-none h-[100px] border-Light-gray py-2 px-5 rounded-md placeholder:text-start text-Grayish-Blue "
         placeholder="Add a comment..."
       />
