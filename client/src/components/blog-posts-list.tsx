@@ -116,8 +116,7 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
         A humble software engineer&apos;s compilation of reflections,
         experiments, and lessons from his journey through the tech world.{" "}
       </p>
-
-      <div className="w-full flex flex-col mt-8">
+      {blogPosts.length > 0 ? <div className="w-full flex flex-col mt-8">
         {/* For each blog post in DB, create a blog post item */}
         {sortedBlogPosts.map((blogPost) => (
           <BlogPostItem
@@ -129,7 +128,8 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
             handleEdit={handleEdit}
           />
         ))}
-      </div>
+      </div> : <p className="text-base text-[var(--tone-five)] text-center mt-10 font-semibold"> 😞 No Posts Yet...</p>}
+      
     </main>
   );
 };
