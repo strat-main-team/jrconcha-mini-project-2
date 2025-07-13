@@ -75,7 +75,7 @@ const BlogPostEditor: FC = () => {
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
           setImagePreviewUrl("");
-        } 
+        }
         return;
       }
       setImagePreviewUrl(URL.createObjectURL(file));
@@ -114,6 +114,9 @@ const BlogPostEditor: FC = () => {
     setTitle("");
     setDescription("");
     setContent("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     setServerActionIsPending(false);
   };
 
