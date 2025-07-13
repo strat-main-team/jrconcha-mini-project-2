@@ -3,8 +3,8 @@ import { FC, useEffect, useState } from "react";
 import { generateSlug, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
-import BlogItemEditButton from "./blog-item-edit-button";
-import BlogItemDeleteButton from "./blog-item-delete-button";
+import { Loader2Icon } from "lucide-react";
+import { Button } from "./button";
 
 interface Props {
   blogPostData: BlogPostDataType;
@@ -31,7 +31,7 @@ const BlogPostItem: FC<Props> = ({
 
       return () => clearTimeout(timeout); // Clean up on editMode toggle
     } else {
-        setButtonsDisplayStatus(false);
+      setButtonsDisplayStatus(false);
     }
   }, [editMode]);
 
@@ -75,10 +75,20 @@ const BlogPostItem: FC<Props> = ({
         <div
           className={`mt-2 gap-2 items-center transition-all duration-300 ease-in-out
               ${editMode ? "flex" : "hidden"}
-              ${buttonsDisplayStatus ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+              ${
+                buttonsDisplayStatus
+                  ? "opacity-100"
+                  : "opacity-0 pointer-events-none"
+              }`}
         >
-          <BlogItemEditButton id={blogPostData.id} handleEdit={handleEdit}></BlogItemEditButton>
-          <BlogItemDeleteButton id={blogPostData.id} handleEdit={handleDelete}></BlogItemDeleteButton>
+          <BlogItemEditButton
+            id={blogPostData.id}
+            handleEdit={handleEdit}
+          ></BlogItemEditButton>
+          <BlogItemDeleteButton
+            id={blogPostData.id}
+            handleEdit={handleDelete}
+          ></BlogItemDeleteButton>
         </div>
       </div>
     </div>
@@ -86,3 +96,55 @@ const BlogPostItem: FC<Props> = ({
 };
 
 export default BlogPostItem;
+
+interface ButtonProps {
+  id: number;
+  handleEdit: (id: number) => void;
+}
+
+const BlogItemEditButton: FC<ButtonProps> = ({ id, handleEdit }) => {
+  const [state, setState] = useState(false);
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      disabled={state}
+      className="text-xs px-2 py-1"
+      onClick={() => {
+        setState(true);
+        handleEdit(id);
+      }}
+    >
+      {state ? (
+        <>
+          <Loader2Icon className="animate-spin mr-2" />
+        </>
+      ) : (
+        "Edit"
+      )}
+    </Button>
+  );
+};
+
+const BlogItemDeleteButton: FC<ButtonProps> = ({ id, handleEdit }) => {
+  const [state, setState] = useState(false);
+  return (
+    <Button
+      variant="destructive"
+      size="sm"
+      className="text-xs px-2 py-1"
+      onClick={() => {
+        setState(true);
+        handleEdit(id);
+      }}
+    >
+      {state ? (
+        <>
+          <Loader2Icon className="animate-spin mr-2" />
+        </>
+      ) : (
+        "Delete"
+      )}
+    </Button>
+  );
+};
