@@ -1,9 +1,3 @@
-// export const metadata: Metadata = {
-//   title: "Zeteo – Just Me, Code, and Coffee",
-//   description:
-//     "A personal blog sharing a humble software engineer's reflections, experiments, and lessons on his journey through the tech world — one post at a time.",
-//   applicationName: "Zeteo",
-// };
 import "../globals.css";
 import { Toaster } from "sonner";
 

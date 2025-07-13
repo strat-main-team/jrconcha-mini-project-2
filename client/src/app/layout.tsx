@@ -22,7 +22,10 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "Zeteo – Just Me, Code, and Coffee",
+  title: {
+    template: "%s | Zeteo Blog – Just Me, Code, and Coffee",
+    default: "Zeteo Blog – Just Me, Code, and Coffee",
+  },
   description:
     "A personal blog sharing a humble software engineer's reflections, experiments, and lessons on his journey through the tech world — one post at a time.",
   applicationName: "Zeteo",

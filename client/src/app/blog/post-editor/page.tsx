@@ -1,5 +1,11 @@
 import BlogPostEditor from "@/components/blog-post-editor";
 import { FC, Suspense } from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Blog Post Editor',
+  description: 'Create, edit, and delete your blog posts all in one place.'
+};
 
 const PostEditorPage: FC = () => {
   return (
