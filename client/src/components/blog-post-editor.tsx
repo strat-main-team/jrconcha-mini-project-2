@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import BreadCrumbs from "@/components/ui/breadcrumbs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,13 +39,45 @@ const BlogPostEditor: FC = () => {
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
 
-  // Handle Image State
+  // Handle Image and its Input State
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+  const fileInputRef = useRef<HTMLInputElement | null>(null); // InputFile element ref to manipulate, because cant use ImagePreviewURL as input value of Input element
 
   // Handles previewing of uploaded image.
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Validate file type, must be an image
+      if (!file.type.startsWith("image/")) {
+        toast.error("Invalid File Type", {
+          description: "Only image files are allowed (JPG, PNG, etc.)",
+          action: { label: "Dismiss", onClick: () => {} },
+        });
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+          setImagePreviewUrl("");
+        } // Reset previewed Image used by Image element and the input element name to empty. So in case of an error, both do not linger.
+        return;
+      }
+
+      // Validate File size, limit is 500kb
+      const fileSizeInBytes = file.size;
+      const fileSizeInKB = fileSizeInBytes / 1024;
+      console.log(`File size: ${fileSizeInBytes} bytes`); // Test
+      // If greater, just indicate the error to the user then return.
+      if (fileSizeInKB > 500) {
+        toast.error("Error!", {
+          description: `Image File Size Limit is 500 KB. Your file is ${fileSizeInKB.toFixed(
+            2
+          )} KB`,
+          action: { label: "Dismiss", onClick: () => {} },
+        });
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+          setImagePreviewUrl("");
+        } 
+        return;
+      }
       setImagePreviewUrl(URL.createObjectURL(file));
     }
   };
@@ -120,7 +152,7 @@ const BlogPostEditor: FC = () => {
             onChange={(e) => setDescription(e.target.value)}
           ></Textarea>
           <label className="font-medium" htmlFor="cover-image">
-            Cover Image (JPG, PNG, etc.)
+            Cover Image (Accepted formats: Image — Max size: 500 KB)
             <span className="text-[var(--error)]"> *</span>
           </label>
           <Input
@@ -131,6 +163,7 @@ const BlogPostEditor: FC = () => {
             id="cover-image"
             required
             multiple={false}
+            ref={fileInputRef}
             onChange={handleFileChange}
           ></Input>
           <div className="flex w-full h-[200px] relative rounded-sm bg-[var(--tone-two)] justify-center items-center">
