@@ -198,6 +198,32 @@ export const updateBlogPost = async (id: number, formData: FormData) => {
 // Delete Methods
 export const deleteBlogPost = async (id: number) => {
   try {
+    // Delete the old picture file from to be deleted item.
+    const postToBeDeleted = await db.query.blogPost.findFirst({
+      where: eq(blogPost.id, id),
+    });
+
+    if (!postToBeDeleted) {
+      return { success: false, message: "Unable to get post to be updated." };
+    }
+
+    // Get the old filePath
+    const oldFilePath = join(
+      process.cwd(),
+      "public/uploads",
+      postToBeDeleted.image_filename
+    );
+
+    try {
+      await access(oldFilePath, constants.F_OK); // Check if it exists
+      await unlink(oldFilePath); // Then Delete
+    } catch (e) {
+      return {
+        success: false,
+        message: `Unable to delete old picture of post to be updated: ${e}`,
+      };
+    }
+    // Then delete the blog post entry
     await db.delete(blogPost).where(eq(blogPost.id, id));
     revalidatePath("/blog");
     return { success: true, message: "Blog Post deleted successfully:" };
