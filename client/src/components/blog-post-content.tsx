@@ -11,7 +11,7 @@ const BlogPostContent: FC<Props> = ({ markdown }: Props) => {
     <div>
       <MDEditor.Markdown
         source={markdown}
-        style={{ whiteSpace: "pre-wrap", backgroundColor: "transparent", color: "var(--tone-six)" }} // color: "var(--tone-six)"
+        style={{  backgroundColor: "transparent", color: "var(--tone-six)" }} // color: "var(--tone-six)"
         className="mt-10"
       />
     </div>
