@@ -16,14 +16,26 @@ interface Props {
 }
 
 const BlogPostsList: FC<Props> = ({ blogPosts }) => {
-  const [sortedBlogPosts, setSortedBlogPosts] = useState<Array<BlogPostDataType>>([])
+  const [sortedBlogPosts, setSortedBlogPosts] = useState<
+    Array<BlogPostDataType>
+  >([]);
 
   // Handle the event where the delete button is clicked
   const handleDelete = (id: number) => {
-    getBlogPostById(id).then((result) => {
+    getBlogPostById(id).then(async (result) => {
       if (result.data) {
-        toast(`Successfully deleted the blog post: "${result.data.title}"`);
-        deleteBlogPost(id);
+        const response = await deleteBlogPost(id);
+        if (response.success) {
+          toast.success("Success!", {
+            description: `${response.message} ${result.data.title}`,
+            action: { label: "Dismiss", onClick: () => {} },
+          });
+        } else if (response.message && !response.success) {
+          toast.error("Error!", {
+            description: `${response.message} ${result.data.title}`,
+            action: { label: "Dismiss", onClick: () => {} },
+          });
+        }
       }
     });
   };
@@ -89,14 +101,14 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
               ></FontAwesomeIcon>
             </Button>
           </Link>
-            <Toggle
-              aria-label="Toggle italic"
-              pressed={editMode}
-              onPressedChange={() => setEditMode((prev) => !prev)} // Toggle edit and delete buttons visibility.
-              className="py-4 lg:py-5 border-1 border-[var(--tone-four)] w-[70px]"
-            >
-              {editMode ? "Editing" : "Viewing"}
-            </Toggle>
+          <Toggle
+            aria-label="Toggle italic"
+            pressed={editMode}
+            onPressedChange={() => setEditMode((prev) => !prev)} // Toggle edit and delete buttons visibility.
+            className="py-4 lg:py-5 border-1 border-[var(--tone-four)] w-[70px]"
+          >
+            {editMode ? "Editing" : "Viewing"}
+          </Toggle>
         </div>
       </div>
       <p className="mt-5 font-normal md:text-lg lg:text-xl px-2">

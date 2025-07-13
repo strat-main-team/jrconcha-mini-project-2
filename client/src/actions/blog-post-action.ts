@@ -129,9 +129,9 @@ export const updateBlogPost = async (id: number, formData: FormData) => {
 export const deleteBlogPost = async (id: number) => {
   try {
     await db.delete(blogPost).where(eq(blogPost.id, id));
+    revalidatePath("/blog");
+    return { success: true, message: "Blog Post deleted successfully:" };
   } catch (e) {
-    throw new Error(`Failed to Delete the blog Post ${e}`);
+    return { success: false, message: `Failed to delete Blog Post. ${e}` };
   }
-
-  revalidatePath("/blog");
 };
