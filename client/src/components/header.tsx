@@ -2,8 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FC } from "react";
 import ModeToggle from "./ui/mode-toggle";
-import MobileNavigationMenu from "./ui/mobile-navigation-menu";
-import NavigationMenu from "./ui/navigation-menu";
+import { NavigationMenu, MobileNavigationMenu } from "./ui/navigation-menu";
 
 const Header: FC = () => {
   return (
@@ -24,8 +23,8 @@ const Header: FC = () => {
         <h1 className="text-md lg:text-lg flex items-center">Zeteo.dev</h1>
       </Link>
       <div className="hidden md:block">
-          <NavigationMenu></NavigationMenu>
-        </div>
+        <NavigationMenu></NavigationMenu>
+      </div>
       <div className="flex gap-2">
         {/* Conditionally show the appropriate nav component, prefer this way as it isn't expensive to render both in the dom */}
         <div className="block md:hidden">
