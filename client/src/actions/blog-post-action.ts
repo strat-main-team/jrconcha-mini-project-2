@@ -4,6 +4,11 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db/drizzle";
 import { blogPost } from "@/db/schema";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
+import { join } from "path";
+import { writeFile } from "fs/promises";
+import { unlink } from "fs/promises";
+import { access } from "fs/promises";
+import { constants } from "fs";
 
 // Get Methods
 export const getBlogPosts = async () => {
@@ -59,15 +64,34 @@ export const addBlogPost = async (formData: FormData) => {
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const content = formData.get("content") as string;
-  const image_filename = formData.get("cover-image") as string;
+  const image_file = formData.get("cover-image") as File;
 
-  if (!title || !description || !content || !image_filename) {
+  if (!title || !description || !content || !image_file) {
     return { success: false, message: "Missing required fields." };
   }
+
+  if (!image_file.type.startsWith("image/")) {
+    return { success: false, message: "Invalid image format." };
+  }
+
+  // Convert file to buffer
+  const buffer = Buffer.from(await image_file.arrayBuffer());
+
+  // Rename file with the timestamp prefix to avoid collisions.
+  const timestamp = Date.now();
+  const fileExt = image_file.name.split(".").pop();
+  const filename = `${timestamp}_${image_file.name.slice(
+    0,
+    image_file.name.indexOf(".")
+  )}.${fileExt}`;
+
+  const filePath = join(process.cwd(), "public/uploads", filename); // EX: http://localhost:3000/uploads/1699876543210.png
+
   try {
+    await writeFile(filePath, buffer);
     // throw new Error("Error") // Test
     await db.insert(blogPost).values({
-      image_filename: "image_filename",
+      image_filename: filename,
       created_at: new Date(),
       updated_at: new Date(),
       title: title,
@@ -95,12 +119,58 @@ export const updateBlogPost = async (id: number, formData: FormData) => {
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const content = formData.get("content") as string;
-    const image_filename = formData.get("cover-image") as string;
+    const image_file = formData.get("cover-image") as File;
 
-    if (!title || !description || !content || !image_filename) {
+    if (!title || !description || !content || !image_file) {
       return { success: false, message: "Missing required fields." };
     }
 
+    if (!image_file.type.startsWith("image/")) {
+      return { success: false, message: "Invalid image format." };
+    }
+
+    // Delete the old picture file from existing item.
+    const postToBeUpdated = await db.query.blogPost.findFirst({
+      where: eq(blogPost.id, id),
+    });
+
+    if (!postToBeUpdated) {
+      return { success: false, message: "Unable to get post to be updated." };
+    }
+
+    // Get the old filePath
+    const oldFilePath = join(
+      process.cwd(),
+      "public/uploads",
+      postToBeUpdated.image_filename
+    );
+
+    try {
+      await access(oldFilePath, constants.F_OK); // Check if it exists
+      await unlink(oldFilePath); // Then Delete
+    } catch (e) {
+      return {
+        success: false,
+        message: `Unable to delete old picture of post to be updated: ${e}`,
+      };
+    }
+
+    // Convert file to buffer
+    const buffer = Buffer.from(await image_file.arrayBuffer());
+
+    // Rename file with the timestamp prefix to avoid collisions.
+    const timestamp = Date.now();
+    const fileExt = image_file.name.split(".").pop();
+    const filename = `${timestamp}_${image_file.name.slice(
+      0,
+      image_file.name.indexOf(".")
+    )}.${fileExt}`;
+
+    const filePath = join(process.cwd(), "public/uploads", filename); // EX: http://localhost:3000/uploads/1699876543210.png
+
+    await writeFile(filePath, buffer);
+
+    // Update values in db
     await db
       .update(blogPost)
       .set({
@@ -108,7 +178,7 @@ export const updateBlogPost = async (id: number, formData: FormData) => {
         description: description,
         content: content,
         updated_at: new Date(),
-        image_filename: "image_filename",
+        image_filename: filename,
       })
       .where(eq(blogPost.id, id));
 

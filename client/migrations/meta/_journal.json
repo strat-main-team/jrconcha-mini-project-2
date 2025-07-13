@@ -43,6 +43,13 @@
       "when": 1752275865118,
       "tag": "0005_ambiguous_zodiak",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1752389758373,
+      "tag": "0006_wooden_annihilus",
+      "breakpoints": true
     }
   ]
 }

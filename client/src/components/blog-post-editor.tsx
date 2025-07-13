@@ -29,6 +29,8 @@ const BlogPostEditor: FC = () => {
           setTitle(result.data.title);
           setDescription(result.data.description);
           setContent(result.data.content);
+          setImagePreviewUrl(`/uploads/${result.data.image_filename}`);
+          // Can't prefill <input type="file" /> even when using ref apparently, so I leave fileInputRef alone
         }
       });
     }
@@ -109,15 +111,17 @@ const BlogPostEditor: FC = () => {
         action: { label: "Dismiss", onClick: () => {} },
       });
     }
-    // Reset values so they do not linger.
-    setImagePreviewUrl("");
-    setTitle("");
-    setDescription("");
-    setContent("");
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    // Reset values so they do not linger, only if successful so user does not have to add or edit from scratch.
+    if (response.success) {
+      setImagePreviewUrl("");
+      setTitle("");
+      setDescription("");
+      setContent("");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      setServerActionIsPending(false);
     }
-    setServerActionIsPending(false);
   };
 
   return (
