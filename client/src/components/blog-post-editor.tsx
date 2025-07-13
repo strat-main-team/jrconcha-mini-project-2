@@ -10,10 +10,10 @@ import {
 } from "@/actions/blog-post-action";
 import Link from "next/link";
 import Image from "next/image";
-import BlogPostEditorButton from "./ui/blog-post-editor-button";
-import { useActionState } from "react";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
+import { Button } from "./ui/button";
+import { Loader2Icon } from "lucide-react";
 
 const BlogPostEditor: FC = () => {
   // If editing an existing post as a result of clicking the edit button on the blog page.
@@ -21,6 +21,7 @@ const BlogPostEditor: FC = () => {
   const isEditing = searchParams.get("editing") === "true";
   const postIdToBeEdited = searchParams.get("id");
 
+  // Set the values of the inputs.
   useEffect(() => {
     if (isEditing && postIdToBeEdited) {
       getBlogPostById(Number(postIdToBeEdited)).then((result) => {
@@ -38,45 +39,6 @@ const BlogPostEditor: FC = () => {
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
 
-  // This determines whether or not the formAction will be the addBlog or editBlog server action.
-  const handleBlogPost = async (
-    prevState: { success: boolean; message: string },
-    formData: FormData
-  ) => {
-
-    if (isEditing) {
-      return await updateBlogPost(
-        initialState,
-        Number(postIdToBeEdited),
-        formData
-      );
-    } else {
-      return await addBlogPost(initialState, formData);
-    }
-  };
-
-  // Track whether the server action of blog update or creation is successful or not.
-  const initialState = { success: false, message: "" };
-
-  const [state, formAction] = useActionState(handleBlogPost, initialState);
-
-  // Display a toast depending on the status of the server action of blog post
-  useEffect(() => {
-    if (state.success) {
-      toast.success("Success!", {
-        description: `${state.message}`,
-        action: { label: "Dismiss", onClick: () => {} },
-      });
-      setImagePreviewUrl(""); // Reset imagepreviewurl so it doesnt linger
-    } else if (state.message && !state.success) {
-      toast.error("Error!", {
-        description: `${state.message}`,
-        action: { label: "Dismiss", onClick: () => {} },
-      });
-      setImagePreviewUrl(""); // Reset imagepreviewurl so it doesnt linger
-    }
-  }, [state]);
-
   // Handle Image State
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
 
@@ -88,13 +50,48 @@ const BlogPostEditor: FC = () => {
     }
   };
 
+  // Track whether the server action of blog update or creation is successful or not.
+  const [serverActionIsPending, setServerActionIsPending] = useState(false);
+
+  // This determines whether or not the formAction will be the addBlog or editBlog server action. Note the Error: Body exceeded 1 MB limit.
+  const handleBlogPost = async (formData: FormData) => {
+    setServerActionIsPending(true);
+
+    let response: { success: boolean; message: string };
+
+    if (isEditing) {
+      response = await updateBlogPost(Number(postIdToBeEdited), formData);
+    } else {
+      response = await addBlogPost(formData);
+    }
+
+    // Display a toast depending on the status of the server action of blog post
+    if (response.success) {
+      toast.success("Success!", {
+        description: `${response.message}`,
+        action: { label: "Dismiss", onClick: () => {} },
+      });
+    } else if (response.message && !response.success) {
+      toast.error("Error!", {
+        description: `${response.message}`,
+        action: { label: "Dismiss", onClick: () => {} },
+      });
+    }
+    // Reset values so they do not linger.
+    setImagePreviewUrl("");
+    setTitle("");
+    setDescription("");
+    setContent("");
+    setServerActionIsPending(false);
+  };
+
   return (
     <div>
       <BreadCrumbs></BreadCrumbs>
       <h1 className="mt-5 text-2xl">Post Editor</h1>
       {/* Form */}
       {/* On submission, automatically calls the formAction and pass the formData to it */}
-      <form action={formAction} className="mt-5">
+      <form action={handleBlogPost} className="mt-5">
         <div className="flex flex-col gap-y-3">
           <label className="font-medium" htmlFor="title">
             Title <span className="text-[var(--error)]">*</span>
@@ -175,11 +172,42 @@ const BlogPostEditor: FC = () => {
             onChange={(e) => setContent(e.target.value)}
           ></Textarea>
 
-          <BlogPostEditorButton isEditing={isEditing}></BlogPostEditorButton>
+          <BlogPostEditorButton
+            isEditing={isEditing}
+            serverActionIsPending={serverActionIsPending}
+          ></BlogPostEditorButton>
         </div>
       </form>
     </div>
   );
 };
 
+interface Props {
+  isEditing: boolean;
+  serverActionIsPending: boolean;
+}
+
+const BlogPostEditorButton: FC<Props> = ({
+  isEditing,
+  serverActionIsPending,
+}) => {
+  return (
+    <Button
+      type="submit"
+      disabled={serverActionIsPending}
+      aria-busy={serverActionIsPending}
+    >
+      {serverActionIsPending ? (
+        <>
+          <Loader2Icon className="animate-spin mr-2" />
+          Please Wait
+        </>
+      ) : isEditing ? (
+        "Update Blog Post"
+      ) : (
+        "Create Blog Post"
+      )}
+    </Button>
+  );
+};
 export default BlogPostEditor;

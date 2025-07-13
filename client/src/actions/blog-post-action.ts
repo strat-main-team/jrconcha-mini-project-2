@@ -55,10 +55,7 @@ export const getBlogPostById = async (
 
 // Post Methods
 
-export const addBlogPost = async (
-  prevState: { success: boolean; message: string }, // Required by the useActionState, because we're returning {success, message}
-  formData: FormData
-) => {
+export const addBlogPost = async (formData: FormData) => {
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const content = formData.get("content") as string;
@@ -78,6 +75,8 @@ export const addBlogPost = async (
       content: content,
     });
     revalidatePath("/blog/post-editor");
+    revalidatePath("/blog");
+
     return {
       success: true,
       message: "Blog post created successfully.",
@@ -91,11 +90,7 @@ export const addBlogPost = async (
 };
 
 // Put Methods
-export const updateBlogPost = async (
-  prevState: { success: boolean; message: string }, // Required by the useActionState, because we're returning {success, message}
-  id: number,
-  formData: FormData
-) => {
+export const updateBlogPost = async (id: number, formData: FormData) => {
   try {
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
