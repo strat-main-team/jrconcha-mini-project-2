@@ -80,7 +80,7 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
 
   return (
     <main>
-      <div className="flex justify-between items-end px-2">
+      <div className="flex justify-between items-end">
         <h1 className="font-bold text-4xl md:text-5xl xl:text-5xl 3xl:text-6xl">
           {" "}
           Blog
@@ -111,7 +111,7 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
           </Toggle>
         </div>
       </div>
-      <p className="mt-5 font-normal md:text-lg lg:text-xl px-2">
+      <p className="mt-5 font-normal text-[var(--tone-six)] md:text-lg lg:text-xl">
         {" "}
         A humble software engineer&apos;s compilation of reflections,
         experiments, and lessons from his journey through the tech world.{" "}

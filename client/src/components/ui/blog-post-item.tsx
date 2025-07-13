@@ -1,6 +1,6 @@
 "use client";
 import { FC, useEffect, useState } from "react";
-import { generateSlug, formatDate } from "@/lib/utils";
+import { generateBlogPostSlug, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
 import { Loader2Icon } from "lucide-react";
@@ -41,16 +41,16 @@ const BlogPostItem: FC<Props> = ({
     <div className={`w-full`}>
       {/* If it is a new Year, generated a header for it */}
       {newYear ? (
-        <h1 className="mb-5 text-2xl font-semibold md:text-3xl xl:text-4xl group-hover:underline mt-5 px-2 ">
+        <h1 className="mb-5 text-2xl font-semibold md:text-3xl xl:text-4xl group-hover:underline mt-5 ">
           {blogPostData.created_at.getFullYear()}
         </h1>
       ) : (
         ""
       )}
-      <div className="group hover:bg-[var(--tone-two)] p-2 rounded-sm md:flex">
+      <div className="group hover:bg-[var(--tone-two)] py-2 rounded-sm md:flex">
         <Link
           key={blogPostData.id}
-          href={generateSlug(blogPostData.id!, blogPostData.title)}
+          href={generateBlogPostSlug(blogPostData.id!, blogPostData.title)}
           className="flex flex-col flex-1"
         >
           <h1 className="font-bold text-lg md:text-xl 3xl:text-2xl text-[var(--accent-primary)] group-hover:underline">

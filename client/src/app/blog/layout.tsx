@@ -7,12 +7,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <section
-      id="blog-content"
-      className="flex flex-col justify-center mx-[0px] py-[24px] px-[24px] md:mx-[clamp(1.5rem,3vw,4rem)] md:py-[48px] md:px-[32px] lg:mx-[clamp(1.5rem,15vw,10rem)] xl:mx-[clamp(1.5rem,18vw,16rem)] 3xl:mx-[clamp(1.5rem,30vw,50rem)]"
-    >
+    <section id="blog-content" className="">
       {" "}
-      <Toaster position="bottom-right"/>
+      <Toaster position="bottom-right" />
       {/* Dynamically calculate a value to be used as the page margin. Use clamp function min, ideal, max, where returned value is (CVW * idealValue in %) as rem.  */}
       {children}
     </section>
