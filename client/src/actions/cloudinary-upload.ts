@@ -1,6 +1,15 @@
 "use server";
 import cloudinary from "@/lib/cloudinary-server";
 
+export async function deleteFromCloudinary(cloudinaryFilePath: string) {
+    const splitFilePath = cloudinaryFilePath.split("/");
+    const fileName = splitFilePath[splitFilePath.length - 1];
+    const fileNameWithoutExt = fileName.slice(0, fileName.indexOf("."));
+    const fullRelativeCloudinaryPath = `blog-cover-image/${fileNameWithoutExt}`
+
+  cloudinary.uploader.destroy(fullRelativeCloudinaryPath); 
+}
+
 export async function uploadToCloudinary(file: File, filename: string) {
   const arrayBuffer = await file.arrayBuffer(); // Convert file to an array of bytes - buffer.
   const buffer = Buffer.from(arrayBuffer);
