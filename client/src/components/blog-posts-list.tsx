@@ -56,9 +56,9 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
   useEffect(() => {
     if (!blogPosts.length) return;
 
-    // Sort by date ascending
+    // Sort by date descending, oldest post first.
     const sortedBlogPosts = [...blogPosts].sort((a, b) => {
-      return a.created_at.getTime() - b.created_at.getTime();
+      return b.created_at.getTime() - a.created_at.getTime();
     });
 
     // Update blog posts to be displayed
@@ -116,20 +116,27 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
         A humble software engineer&apos;s compilation of reflections,
         experiments, and lessons from his journey through the tech world.{" "}
       </p>
-      {blogPosts.length > 0 ? <div className="w-full flex flex-col mt-8">
-        {/* For each blog post in DB, create a blog post item */}
-        {sortedBlogPosts.map((blogPost) => (
-          <BlogPostItem
-            newYear={firstBlogPosts.includes(blogPost)} // Return newYear is true if this is the first blog post of the year.
-            key={blogPost.id}
-            blogPostData={blogPost}
-            editMode={editMode}
-            handleDelete={handleDelete}
-            handleEdit={handleEdit}
-          />
-        ))}
-      </div> : <p className="text-base text-[var(--tone-five)] text-center mt-10 font-semibold"> 😞 No Posts Yet...</p>}
-      
+
+      {blogPosts.length > 0 ? (
+        <div className="w-full flex flex-col mt-8">
+          {/* For each blog post in DB, create a blog post item */}
+          {sortedBlogPosts.map((blogPost) => (
+            <BlogPostItem
+              newYear={firstBlogPosts.includes(blogPost)} // Return newYear is true if this is the first blog post of the year.
+              key={blogPost.id}
+              blogPostData={blogPost}
+              editMode={editMode}
+              handleDelete={handleDelete}
+              handleEdit={handleEdit}
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-base text-[var(--tone-five)] text-center mt-10 font-semibold">
+          {" "}
+          😞 No Posts Yet...
+        </p>
+      )}
     </main>
   );
 };
