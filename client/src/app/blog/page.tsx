@@ -7,6 +7,28 @@ export const metadata: Metadata = {
   title: "Blog Lists Page",
   description:
     "Explore all my blog posts—from deep dives into code to casual developer thoughts. Browse freely, discover insights, and enjoy the journey.",
+  openGraph: {
+    title: "Blog Lists Page",
+    description:
+      "Explore all my blog posts—from deep dives into code to casual developer thoughts. Browse freely, discover insights, and enjoy the journey.",
+    type: "website",
+    url: `https://jrconcha-mini-project-2.vercel.app/blog`,
+    images: [
+      {
+        url: `https://jrconcha-mini-project-2.vercel.app/blog_page_metadata.png`,
+        alt: `Image of the blog lists page`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog Lists Page",
+    description:
+      "Explore all my blog posts—from deep dives into code to casual developer thoughts. Browse freely, discover insights, and enjoy the journey.",
+    images: [
+      `https://jrconcha-mini-project-2.vercel.app/blog_page_metadata.png`,
+    ],
+  },
 };
 
 const BlogPage: FC = async () => {
