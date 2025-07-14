@@ -22,7 +22,10 @@ export const monthNames = [
 ];
 
 export function generateBlogPostSlug(id: number, title: string) {
-  return `/blog/${id}-${title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "")}`;
+  return `/blog/${id}-${title
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9\-]/g, "")}`;
 }
 
 export const formatDate = (dateObject: Date): string => {

@@ -9,6 +9,7 @@ import { writeFile } from "fs/promises";
 import { unlink } from "fs/promises";
 import { access } from "fs/promises";
 import { constants } from "fs";
+import { uploadToCloudinary } from "@/actions/cloudinary-upload";
 
 // Get Methods
 export const getBlogPosts = async () => {
@@ -74,24 +75,10 @@ export const addBlogPost = async (formData: FormData) => {
     return { success: false, message: "Invalid image format." };
   }
 
-  // Convert file to buffer
-  const buffer = Buffer.from(await image_file.arrayBuffer());
-
-  // Rename file with the timestamp prefix to avoid collisions.
-  const timestamp = Date.now();
-  const fileExt = image_file.name.split(".").pop();
-  const filename = `${timestamp}_${image_file.name.slice(
-    0,
-    image_file.name.indexOf(".")
-  )}.${fileExt}`;
-
-  const filePath = join(process.cwd(), "public/uploads", filename); // EX: http://localhost:3000/uploads/1699876543210.png
-
   try {
-    await writeFile(filePath, buffer);
-    // throw new Error("Error") // Test
+    const cloudinary_image_url = await uploadToCloudinary(image_file, image_file.name);
     await db.insert(blogPost).values({
-      image_filename: filename,
+      image_file_path: cloudinary_image_url,
       created_at: new Date(),
       updated_at: new Date(),
       title: title,
@@ -142,7 +129,7 @@ export const updateBlogPost = async (id: number, formData: FormData) => {
     const oldFilePath = join(
       process.cwd(),
       "public/uploads",
-      postToBeUpdated.image_filename
+      postToBeUpdated.image_file_path
     );
 
     try {
@@ -178,7 +165,7 @@ export const updateBlogPost = async (id: number, formData: FormData) => {
         description: description,
         content: content,
         updated_at: new Date(),
-        image_filename: filename,
+        image_file_path: filename,
       })
       .where(eq(blogPost.id, id));
 
@@ -211,7 +198,7 @@ export const deleteBlogPost = async (id: number) => {
     const oldFilePath = join(
       process.cwd(),
       "public/uploads",
-      postToBeDeleted.image_filename
+      postToBeDeleted.image_file_path
     );
 
     try {
