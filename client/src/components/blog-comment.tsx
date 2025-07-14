@@ -370,7 +370,7 @@ const CommentOptions: FC<{
   return (
     <div className="flex justify-end">
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <div>
             <button className="p-1 bg-accent rounded-sm text-lg">⋮</button>
           </div>
