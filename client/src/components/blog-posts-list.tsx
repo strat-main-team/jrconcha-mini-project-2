@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { BlogPostDataType } from "@/types/BlogPostDataType";
 import BlogPostItem from "./ui/blog-post-item";
 import Link from "next/link";
@@ -10,13 +10,15 @@ import { Toggle } from "@/components/ui/toggle";
 import { deleteBlogPost, getBlogPostById } from "@/actions/blog-post-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Input } from "./ui/input";
+import Image from "next/image";
 
 interface Props {
   blogPosts: BlogPostDataType[];
 }
 
 const BlogPostsList: FC<Props> = ({ blogPosts }) => {
-  const [sortedBlogPosts, setSortedBlogPosts] = useState<
+  const [blogPostsToDisplay, setBlogPostsToDisplay] = useState<
     Array<BlogPostDataType>
   >([]);
 
@@ -56,13 +58,13 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
   useEffect(() => {
     if (!blogPosts.length) return;
 
-    // Sort by date descending, oldest post first.
+    // Sort by date descending, newest post first.
     const sortedBlogPosts = [...blogPosts].sort((a, b) => {
       return b.created_at.getTime() - a.created_at.getTime();
     });
 
     // Update blog posts to be displayed
-    setSortedBlogPosts(sortedBlogPosts);
+    setBlogPostsToDisplay(sortedBlogPosts);
 
     const seenYears = new Set<number>();
     const firstPostsByYear: Array<BlogPostDataType> = [];
@@ -77,6 +79,13 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
 
     setFirstBlogPosts(firstPostsByYear);
   }, [blogPosts]);
+
+  // Search Functionality
+  const [searchQuery, setSearchQuery] = useState("");
+  // Filter posts to display based on searchquery
+  const filteredPostsToDisplay = blogPostsToDisplay.filter((post) =>
+    post.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <main>
@@ -116,24 +125,47 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
         A humble software engineer&apos;s compilation of reflections,
         experiments, and lessons from his journey through the tech world.{" "}
       </p>
+      {/* Search Bar*/}
+      <SearchBar value={searchQuery} onChange={setSearchQuery} />
 
       {blogPosts.length > 0 ? (
-        <div className="w-full flex flex-col mt-8">
-          {/* For each blog post in DB, create a blog post item */}
-          {sortedBlogPosts.map((blogPost) => (
-            <BlogPostItem
-              newYear={firstBlogPosts.includes(blogPost)} // Return newYear is true if this is the first blog post of the year.
-              key={blogPost.id}
-              blogPostData={blogPost}
-              editMode={editMode}
-              handleDelete={handleDelete}
-              handleEdit={handleEdit}
-            />
-          ))}
-        </div>
+        searchQuery.length > 0 && filteredPostsToDisplay.length > 0 ? (
+          // if query exists and matches found
+          <div className="w-full flex flex-col mt-8">
+            {(filteredPostsToDisplay ?? blogPostsToDisplay).map((blogPost) => (
+              <BlogPostItem
+                newYear={firstBlogPosts.includes(blogPost)}
+                key={blogPost.id}
+                blogPostData={blogPost}
+                editMode={editMode}
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
+              />
+            ))}
+          </div>
+        ) : searchQuery.length > 0 ? (
+          //  if query exists but no match
+          <p className="text-base text-[var(--tone-five)] text-center mt-10 font-semibold">
+            😞 No Posts Found with that Query...
+          </p>
+        ) : (
+          // Default, no query is typed, show all
+          <div className="w-full flex flex-col mt-8">
+            {blogPostsToDisplay.map((blogPost) => (
+              <BlogPostItem
+                newYear={firstBlogPosts.includes(blogPost)}
+                key={blogPost.id}
+                blogPostData={blogPost}
+                editMode={editMode}
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
+              />
+            ))}
+          </div>
+        )
       ) : (
+        // no blogposts at all
         <p className="text-base text-[var(--tone-five)] text-center mt-10 font-semibold">
-          {" "}
           😞 No Posts Yet...
         </p>
       )}
@@ -142,3 +174,33 @@ const BlogPostsList: FC<Props> = ({ blogPosts }) => {
 };
 
 export default BlogPostsList;
+
+interface SearchBarProps {
+  value: string;
+  onChange: (newText: string) => void;
+}
+
+const SearchBar: FC<SearchBarProps> = ({ value, onChange }) => {
+  return (
+    <form onSubmit={(e) => e.preventDefault()}>
+      <div className="relative w-full max-w-[300px] md:w-[300px] mt-5">
+        <Input
+          id="search"
+          type="search"
+          autoComplete="off"
+          placeholder="Search for a post..."
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="pl-10 pr-3"
+        />
+        <Image
+          height={20}
+          width={20}
+          src="/search_icon.png"
+          alt="search"
+          className="absolute left-3 top-2 transform pointer-events-none"
+        />
+      </div>
+    </form>
+  );
+};
