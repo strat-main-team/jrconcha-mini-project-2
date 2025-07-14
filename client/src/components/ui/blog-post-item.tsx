@@ -53,7 +53,7 @@ const BlogPostItem: FC<Props> = ({
           href={generateBlogPostSlug(blogPostData.id!, blogPostData.title)}
           className="flex flex-col flex-1"
         >
-          <h1 className="font-bold text-lg md:text-xl 3xl:text-2xl text-[var(--accent-primary)] group-hover:underline">
+          <h1 className="font-bold text-lg md:text-xl 3xl:text-2xl text-[var(--accent-primary)] group-hover:underline break-all w-full">
             {" "}
             {blogPostData.title}
           </h1>
@@ -67,7 +67,7 @@ const BlogPostItem: FC<Props> = ({
           </p>
           <p
             id="blog-post-desc"
-            className="mt-1 text-sm md:text-base 3xl:text-lg text-[var(--tone-six)] text-ellipsis"
+            className="mt-1 text-sm md:text-base 3xl:text-lg text-[var(--tone-six)] text-ellipsis break-all w-full"
           >
             {blogPostData.description}
           </p>

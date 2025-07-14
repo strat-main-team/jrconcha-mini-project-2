@@ -12,7 +12,7 @@ const BlogInfo: FC<Props> = ({ blogPostData }) => {
   return (
     <Fragment>
       <BreadCrumbs></BreadCrumbs>
-      <h1 className="mt-10 text-4xl lg:text-5xl 3xl-text-6xl font-semibold">{blogPostData.title}</h1>
+      <h1 className="mt-10 text-4xl lg:text-5xl 3xl-text-6xl font-semibold break-all w-full">{blogPostData.title}</h1>
       <hr className="mt-5 border-t border-[var(--tone-four)]"></hr>
       <div className="flex w-full mt-5 gap-3 items-center">
         <div className="w-9 h-9 md:w-12 md:h-12 min-w-[36px] md:min-w-[48px] relative">

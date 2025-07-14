@@ -44,7 +44,7 @@ const BreadCrumbs: FC = () => {
       {pathNamesObject.map((pathNameObject) => {
         // If current pathname element is the last element of pathNames array, do not render as a link.
         return pathNameObject === pathNamesObject[pathNamesObject.length - 1] ? (
-          <p key={pathNameObject.label} className="text-xs font-medium md:text-sm ">
+          <p key={pathNameObject.label} className="text-xs font-medium md:text-sm break-all w-full ">
             {" "}
             {pathNameObject.label}{" "}
           </p>
@@ -53,7 +53,7 @@ const BreadCrumbs: FC = () => {
             <Link
               key={pathNameObject.label}
               href={`/${pathNameObject.slug}`}
-              className="text-xs font-normal underline underline-offset-2 hover:drop-shadow-[0_0_3px_var(--foreground)] duration-150 md:text-sm"
+              className="text-xs font-normal underline underline-offset-2 hover:drop-shadow-[0_0_3px_var(--foreground)] duration-150 md:text-sm "
             >
               {pathNameObject.label}{" "}
             </Link>
