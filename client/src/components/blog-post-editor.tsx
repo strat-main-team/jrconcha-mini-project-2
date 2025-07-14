@@ -29,7 +29,7 @@ const BlogPostEditor: FC = () => {
           setTitle(result.data.title);
           setDescription(result.data.description);
           setContent(result.data.content);
-          setImagePreviewUrl(`/uploads/${result.data.image_filename}`);
+          setImagePreviewUrl(result.data.image_file_path);
           // Can't prefill <input type="file" /> even when using ref apparently, so I leave fileInputRef alone
         }
       });

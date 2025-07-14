@@ -5,7 +5,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'cdn.buymeacoffee.com', // For the yellow buy me a coffee on the footer.
+        hostname: 'cdn.buymeacoffee.com', // For the yellow buy me a coffee on the footer and.
+      },
+       {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com', // For accessing the blog images hosted on cloudinary
       },
     ],
   },

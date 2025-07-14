@@ -17,7 +17,7 @@ const BlogCard: FC<Props> = ({ post }) => {
         {/* Image section */}
         <div className="relative w-full h-48">
           <Image
-            src={`/uploads/${post.image_filename}`}
+            src={post.image_file_path}
             alt={post.title}
             fill
             className="object-cover"

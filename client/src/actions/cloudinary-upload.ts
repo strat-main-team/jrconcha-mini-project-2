@@ -11,11 +11,10 @@ export async function uploadToCloudinary(file: File, filename: string) {
 
   // construct a unique filename prefixing the existing filename with a timestamp to prevent collisions
   const timestamp = Date.now();
-  const fileExt = filename.split(".").pop();
   const finalFileName = `${timestamp}_${filename.slice(
     0,
     filename.indexOf(".")
-  )}.${fileExt}`;
+  )}`;
 
   const options = {
     public_id: finalFileName,

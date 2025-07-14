@@ -55,7 +55,7 @@ const BlogInfo: FC<Props> = ({ blogPostData }) => {
       <hr className="mt-5 border-t border-[var(--tone-four)]"></hr>
       <div className="w-full h-[300px] md:h-[500px] 3xl:[700px] relative mt-5">
           <Image
-            src={`/uploads/${blogPostData.image_filename}`}
+            src={blogPostData.image_file_path}
             alt="Cover page of post"
             fill // Use position:absolute to fill container, must be positioned relative to a positioned relative ancestor.
             className="rounded-sm object-cover"

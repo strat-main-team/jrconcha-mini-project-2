@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       url: `https://jrconcha-mini-project-2.vercel.app/blog/${slug}`,
       images: [
         {
-          url: `https://jrconcha-mini-project-2.vercel.app/uploads/${post.image_filename}`,
+          url: post.image_file_path,
           alt: `Blog #${id}: ${post.title}`,
         },
       ],
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       card: "summary_large_image",
       title: `Blog #${id}: ${post.title}`,
       description: post.description,
-      images: [`https://jrconcha-mini-project-2.vercel.app/${post.image_filename}`],
+      images: [post.image_file_path],
     },
   };
 }
