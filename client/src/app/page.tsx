@@ -3,6 +3,7 @@ import BlogCard from "@/components/ui/blog-card";
 import { getBlogPosts } from "@/actions/blog-post-action";
 import RotatingCrossfadeBanner from "@/components/ui/banner";
 import SocialLinks from "@/components/ui/socials";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Home Page",
@@ -39,12 +40,12 @@ export default async function HomePage() {
             are magical.
           </p>
           <p className="mt-5 text-[var(--tone-six)] md:text-lg 3xl:text-2xl">
-            I&apos;ve only recently begun my blogging journey, and I&apos;m excited (and
-            slightly nervous) to be putting my thoughts out there. Expect posts
-            about my ups and downs in tech, code that works (and sometimes
-            doesn&apos;t), cool projects, life lessons, and a sprinkle of things I
-            enjoy — from pixel-art games to productivity hacks I try (and
-            sometimes abandon 😅).
+            I&apos;ve only recently begun my blogging journey, and I&apos;m
+            excited (and slightly nervous) to be putting my thoughts out there.
+            Expect posts about my ups and downs in tech, code that works (and
+            sometimes doesn&apos;t), cool projects, life lessons, and a sprinkle
+            of things I enjoy — from pixel-art games to productivity hacks I try
+            (and sometimes abandon 😅).
           </p>
           <p className="mt-5 text-[var(--tone-six)] md:text-lg 3xl:text-2xl">
             Whether you’re a fellow dev, a student, or just someone wandering
@@ -59,13 +60,17 @@ export default async function HomePage() {
           <div className="flex justify-end">
             <SocialLinks></SocialLinks>
           </div>
-          
         </div>
       </div>
       <div className="mt-10 md:px-4">
         <p className="text-2xl font-bold md:text-3xl 3xl:text-5xl">
           {" "}
-          My Latest Articles!
+          My Latest Articles!{" "}
+          <Link href="/blog">
+            <span className="text-xs font-normal text-[var(--link-color)] hover:text-[var(--link-hover)]">
+              See More
+            </span>
+          </Link>
         </p>
         <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {pickThreePosts.map((post) => (
@@ -75,4 +80,4 @@ export default async function HomePage() {
       </div>
     </div>
   );
-};
+}
