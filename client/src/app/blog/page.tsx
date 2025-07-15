@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { getBlogPosts } from "@/actions/blog-post-action";
 import BlogPostsList from "@/components/blog-posts-list";
 import { Metadata } from "next";
