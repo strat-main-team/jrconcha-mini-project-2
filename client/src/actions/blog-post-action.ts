@@ -88,6 +88,7 @@ export const addBlogPost = async (formData: FormData) => {
     });
     revalidatePath("/blog/post-editor");
     revalidatePath("/blog");
+    revalidatePath("/");
 
     return {
       success: true,
@@ -153,6 +154,7 @@ export const updateBlogPost = async (id: number, formData: FormData) => {
       .where(eq(blogPost.id, id));
 
     revalidatePath("/blog");
+    revalidatePath("/");
     return {
       success: true,
       message: "Blog post updated successfully.",
@@ -188,6 +190,7 @@ export const deleteBlogPost = async (id: number) => {
     // Then delete the blog post entry
     await db.delete(blogPost).where(eq(blogPost.id, id));
     revalidatePath("/blog");
+    revalidatePath("/");
     return { success: true, message: "Blog Post deleted successfully:" };
   } catch (e) {
     return { success: false, message: `Failed to delete Blog Post. ${e}` };
