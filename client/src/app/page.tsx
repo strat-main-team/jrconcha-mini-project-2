@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { FC } from "react";
 import BlogCard from "@/components/ui/blog-card";
 import { getBlogPosts } from "@/actions/blog-post-action";
 import RotatingCrossfadeBanner from "@/components/ui/banner";
@@ -9,7 +8,7 @@ export const metadata: Metadata = {
   title: "Home Page",
 };
 
-const HomePage: FC = async () => {
+export default async function HomePage() {
   const blogPostsData = await getBlogPosts();
   const pickThreePosts = blogPostsData.slice(0, 3);
   return (
@@ -77,5 +76,3 @@ const HomePage: FC = async () => {
     </div>
   );
 };
-
-export default HomePage;

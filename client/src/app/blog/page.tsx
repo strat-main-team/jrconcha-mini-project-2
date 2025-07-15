@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   },
 };
 
-const BlogPage: FC = async () => {
+export default async function BlogPage() {
   const data = await getBlogPosts();
   return (
     <div>
@@ -40,4 +40,3 @@ const BlogPage: FC = async () => {
   );
 };
 
-export default BlogPage;

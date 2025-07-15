@@ -1,5 +1,5 @@
 import BlogPostEditor from "@/components/blog-post-editor";
-import { FC, Suspense } from "react";
+import { Suspense } from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
 };
 
-const PostEditorPage: FC = () => {
+export default async function PostEditorPage() {
   return (
     // UseSearch params must be wrapped in a suspense.
     <Suspense
@@ -42,4 +42,3 @@ const PostEditorPage: FC = () => {
   );
 };
 
-export default PostEditorPage;
