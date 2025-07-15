@@ -13,7 +13,7 @@ interface Props {
 const BlogCard: FC<Props> = ({ post }) => {
   return (
     <Link href={generateBlogPostSlug(post.id!, post.title)}>
-      <div className="w-full max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-[#111] border border-muted transition hover:shadow-xl hover:scale-105">
+      <div className="w-full max-w-sm h-[350px] flex flex-col rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-[#111] border border-muted transition hover:shadow-xl hover:scale-105">  
         {/* Image section */}
         <div className="relative w-full h-48">
           <Image
