@@ -47,7 +47,7 @@ const BlogPostItem: FC<Props> = ({
       ) : (
         ""
       )}
-      <div className="group hover:bg-[var(--tone-two)] py-2 rounded-sm md:flex hover:px-2 transition-all duration-300">
+      <div className="group hover:bg-[var(--tone-two)] py-2 rounded-sm md:flex pr-2 hover:pl-2 transition-all duration-300">
         <Link
           key={blogPostData.id}
           href={generateBlogPostSlug(blogPostData.id!, blogPostData.title)}
