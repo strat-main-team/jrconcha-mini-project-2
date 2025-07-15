@@ -60,11 +60,18 @@ Follow the instructions below to set-up this application.
    cd client
    npm install
    ```
-3. Run the development server
+4. Setup the environment variables needed
+   ```sh
+   DATABASE_URL=''
+   CLOUDINARY_CLOUD_NAME=''
+   CLOUDINARY_API_KEY=''
+   CLOUDINARY_API_SECRET=''
+   ```
+6. Run the development server
    ```sh
    npm run dev
    ```
-4. Open your browser and visit the site.
+7. Open your browser and visit the site.
    ```sh
    http://localhost:3000
    ```
