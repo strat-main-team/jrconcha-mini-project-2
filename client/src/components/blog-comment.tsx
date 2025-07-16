@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CommentDataType } from "@/types/BlogPostDataType";
+import { CommentDataType } from "@/types/DataTypes";
 import { FC, Fragment, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
@@ -13,9 +13,10 @@ import {
   addComment,
   deleteComment,
   updateComment,
+  updateCommentLikes,
 } from "@/actions/comment-action";
 import { toast } from "sonner";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, ThumbsUpIcon } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import { getRelativeTimeWithExactTooltip } from "@/lib/utils";
 import Image from "next/image";
@@ -173,7 +174,7 @@ const Comment: FC<{
     <div className="rounded-xl border p-4 bg-[var(--tone-two)] shadow-sm">
       <div className="flex gap-2 md:gap-3 w-full">
         {/* Placeholder avatar */}
-        <div className="h-full">
+        <div className="h-full ">
           <div className="w-7 h-7 md:w-10 md:h-10 min-w-[24px] md:min-w-[32px] relative">
             <Image
               src="/picture.png"
@@ -220,13 +221,14 @@ const Comment: FC<{
             </div>
           </div>
           <CommentBody
-            content={commentData.comment}
+            commentData={commentData}
             isEditing={isEditing}
             serverActionIsPending={serverActionIsPending}
             handleDelete={handleDelete}
             handleEditClick={handleEditClick}
             handleCancelEdit={handleCancelEdit}
             handleUpdate={handleUpdate}
+            path={path}
           ></CommentBody>
         </div>
       </div>
@@ -235,23 +237,27 @@ const Comment: FC<{
 };
 
 const CommentBody: FC<{
-  content: string;
+  commentData: CommentDataType;
   isEditing: boolean;
   serverActionIsPending: boolean;
   handleEditClick: () => void;
   handleDelete: () => void;
   handleCancelEdit: () => void;
   handleUpdate: (updatedComment: string) => void;
+  path: string;
 }> = ({
-  content,
+  commentData,
   isEditing,
   serverActionIsPending,
   handleEditClick,
   handleDelete,
   handleCancelEdit,
   handleUpdate,
+  path,
 }) => {
-  const [currentlyEditedContent, setCurrentlyEditedContent] = useState(content);
+  const [currentlyEditedContent, setCurrentlyEditedContent] = useState(
+    commentData.comment
+  );
 
   // Handles whenever an input on textarea occurs
   const handleChange = (text: string) => {
@@ -265,7 +271,7 @@ const CommentBody: FC<{
       handleUpdate(currentlyEditedContent);
     } else if (e.key === "Escape") {
       handleCancelEdit();
-      setCurrentlyEditedContent(content); // // If cancelled, just dispose of any changes and return to whatever text it was before editing.
+      setCurrentlyEditedContent(commentData.comment); // // If cancelled, just dispose of any changes and return to whatever text it was before editing.
     }
   };
 
@@ -286,7 +292,7 @@ const CommentBody: FC<{
         </Textarea>
       ) : (
         <p className="mt-1 text-xs md:text-sm text-[var(--tone-six)] break-all whitespace-pre-line">
-          {content}
+          {commentData.comment}
         </p>
       )}
 
@@ -294,7 +300,7 @@ const CommentBody: FC<{
         <EditCommentButtons
           handleCancelEdit={handleCancelEdit}
           setCurrentlyEditedContent={setCurrentlyEditedContent}
-          content={content}
+          content={commentData.comment}
           handleUpdate={() => {
             handleUpdate(currentlyEditedContent);
           }}
@@ -302,11 +308,19 @@ const CommentBody: FC<{
           serverActionIsPending={serverActionIsPending}
         ></EditCommentButtons>
       ) : (
-        <CommentOptions
-          serverActionIsPending={serverActionIsPending}
-          handleEditClick={handleEditClick}
-          handleDelete={handleDelete}
-        ></CommentOptions>
+        <div className="flex justify-between mt-2 ">
+          <CommentLikes
+            commentId={commentData.id}
+            comment_likes={commentData.like_count}
+            path={path}
+          ></CommentLikes>
+
+          <CommentOptions
+            serverActionIsPending={serverActionIsPending}
+            handleEditClick={handleEditClick}
+            handleDelete={handleDelete}
+          ></CommentOptions>
+        </div>
       )}
     </Fragment>
   );
@@ -358,6 +372,33 @@ const EditCommentButtons: FC<{
           "Update Comment"
         )}
       </Button>
+    </div>
+  );
+};
+
+const CommentLikes: FC<{
+  commentId: number;
+  comment_likes: number;
+  path: string;
+}> = ({ commentId, comment_likes, path }) => {
+  const [likes, setLikes] = useState(comment_likes); // Track Holistic Likes (Initial, onClick)
+
+  const handleLikeClick = async () => {
+    setLikes((prev) => prev + 1);
+    const local_likes = likes + 1; // because if i were to use likes in updateCommentLikes, it won't update with the new value until next render.
+    const result = await updateCommentLikes(commentId, local_likes, path);
+    console.log(`${result.message}, new likes: ${likes}`);
+  };
+
+  return (
+    <div className="flex items-center gap-1">
+      <button
+        onClick={handleLikeClick}
+        className="hover:text-[var(--accent-primary)] active:text-[var(--accent-primary)]"
+      >
+        <ThumbsUpIcon size={18} />
+      </button>
+      <p className="text-[12px] mt-1">{likes}</p>
     </div>
   );
 };

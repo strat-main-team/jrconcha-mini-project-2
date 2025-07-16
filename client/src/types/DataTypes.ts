@@ -16,4 +16,5 @@ export type CommentDataType = {
   // parent_comment_id: number | null,
   created_at: Date,
   updated_at: Date,
+  like_count: number,
 }

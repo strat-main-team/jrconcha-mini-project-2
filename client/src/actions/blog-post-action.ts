@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db/drizzle";
 import { blogPost } from "@/db/schema";
-import { BlogPostDataType } from "@/types/BlogPostDataType";
+import { BlogPostDataType } from "@/types/DataTypes";
 import {
   deleteFromCloudinary,
   uploadToCloudinary,

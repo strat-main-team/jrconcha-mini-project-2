@@ -1,7 +1,7 @@
 "use client";
 import { FC } from "react";
 import Image from "next/image";
-import { BlogPostDataType } from "@/types/BlogPostDataType";
+import { BlogPostDataType } from "@/types/DataTypes";
 import { format } from "date-fns";
 import Link from "next/link";
 import { generateBlogPostSlug } from "@/lib/utils";

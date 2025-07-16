@@ -2,7 +2,7 @@
 import { FC, useEffect, useState } from "react";
 import { generateBlogPostSlug, formatDate } from "@/lib/utils";
 import Link from "next/link";
-import { BlogPostDataType } from "@/types/BlogPostDataType";
+import { BlogPostDataType } from "@/types/DataTypes";
 import { Loader2Icon } from "lucide-react";
 import { Button } from "./button";
 

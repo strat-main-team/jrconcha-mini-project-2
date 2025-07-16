@@ -8,6 +8,13 @@
       "when": 1752478677862,
       "tag": "0000_perpetual_speedball",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1752629887730,
+      "tag": "0001_moaning_stryfe",
+      "breakpoints": true
     }
   ]
 }

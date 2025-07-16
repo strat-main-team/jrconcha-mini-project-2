@@ -1,6 +1,6 @@
 "use client";
 import React, { FC, useState, useEffect } from "react";
-import { BlogPostDataType } from "@/types/BlogPostDataType";
+import { BlogPostDataType } from "@/types/DataTypes";
 import BlogPostItem from "./ui/blog-post-item";
 import Link from "next/link";
 import { Button } from "./ui/button";

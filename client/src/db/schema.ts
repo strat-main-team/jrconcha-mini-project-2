@@ -17,6 +17,7 @@ const comments = pgTable("comments", {
   // parent_comment_id: integer("parent_comment_id"),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
+  like_count: integer("like_count").default(0),
 });
 
 const blogPost = pgTable("blog_post", {

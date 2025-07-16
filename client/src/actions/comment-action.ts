@@ -55,6 +55,22 @@ export const updateComment = async (
   }
 };
 
+export const updateCommentLikes = async (comment_id: number, comment_likes: number, pathToRevalidate: string) => {
+  try {
+    await db
+      .update(comments)
+      .set({
+        like_count: comment_likes
+      })
+      .where(eq(comments.id, comment_id));
+    revalidatePath(pathToRevalidate);
+    return { success: true, message: "Commment likes updated successfully." };
+  } catch (e) {
+    return { success: false, message: `Failed to update comment likes. ${e}` };
+  }
+
+}
+
 // Delete Methods
 export const deleteComment = async (
   comment_id: number,
