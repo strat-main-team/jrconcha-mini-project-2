@@ -58,7 +58,7 @@ const BlogInfo: FC<Props> = ({ blogPostData }) => {
             src={blogPostData.image_file_path}
             alt="Cover page of post"
             fill // Use position:absolute to fill container, must be positioned relative to a positioned relative ancestor.
-            className="rounded-sm object-fill"
+            className="rounded-sm object-cover"
             sizes="small"
           />
         </div>
