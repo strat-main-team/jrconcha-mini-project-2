@@ -22,7 +22,7 @@
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-A full-stack personal blog website built by me using [Next.js](https://nextjs.org/) with the App Router, styled using [Tailwind CSS](https://tailwindcss.com/), and enhanced with accessible UI components from [shadcn/ui](https://ui.shadcn.com/). Hosted in [Vercel](https://jrconcha-mini-project-2.vercel.app/), cloud storage by [Cloudinary](https://cloudinary.com)!
+A full-stack personal blog website built by me using [Next.js](https://nextjs.org/) with the App Router, styled using [Tailwind CSS](https://tailwindcss.com/), enhanced with accessible UI components from [shadcn/ui](https://ui.shadcn.com/), and featuring [React Markdown's markdown capabilities!](https://github.com/remarkjs/react-markdown). Hosted in [Vercel](https://jrconcha-mini-project-2.vercel.app/), cloud storage by [Cloudinary](https://cloudinary.com)!
 
 ### ✨ Features
 
@@ -40,6 +40,7 @@ A full-stack personal blog website built by me using [Next.js](https://nextjs.or
 - 🌞 Includes a theme toggle for light, dark, or system preference — making displayed content easy on the eyes
 - 📱 Fully responsive layout optimized for mobile, tablet, and desktop
 - ☁️ Utilize Cloudinary to store images in the cloud!
+- ✍️ React Markdown to dynamically render markdown content in blog posts!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
