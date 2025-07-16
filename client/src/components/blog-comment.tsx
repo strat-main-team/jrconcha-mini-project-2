@@ -402,7 +402,7 @@ const CommentLikes: FC<{
   };
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <button
         onClick={handleLikeClick}
         className={`hover:text-[var(--accent-primary)] active:text-[var(--accent-primary)] transition-all duration-300 ${
