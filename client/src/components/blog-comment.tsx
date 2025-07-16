@@ -381,20 +381,33 @@ const CommentLikes: FC<{
   comment_likes: number;
   path: string;
 }> = ({ commentId, comment_likes, path }) => {
+  const [hasLiked, setHasLiked] = useState(false);
   const [likes, setLikes] = useState(comment_likes); // Track Holistic Likes (Initial, onClick)
 
   const handleLikeClick = async () => {
-    setLikes((prev) => prev + 1);
-    const local_likes = likes + 1; // because if i were to use likes in updateCommentLikes, it won't update with the new value until next render.
-    const result = await updateCommentLikes(commentId, local_likes, path);
-    console.log(`${result.message}, new likes: ${likes}`);
+    if (!hasLiked) {
+      setHasLiked(true);
+      setLikes((prev) => prev + 1);
+      const local_likes = likes + 1; // because if i were to use likes in updateCommentLikes, it won't update with the new value until next render.
+      const result = await updateCommentLikes(commentId, local_likes, path);
+      console.log(`${result.message}, new likes: ${likes}`);
+    }
+    else{
+      setHasLiked(false);
+      setLikes((prev) => prev - 1);
+      const local_likes = likes - 1; // because if i were to use likes in updateCommentLikes, it won't update with the new value until next render.
+      const result = await updateCommentLikes(commentId, local_likes, path);
+      console.log(`${result.message}, new likes: ${likes}`);
+    }
   };
 
   return (
     <div className="flex items-center gap-1">
       <button
         onClick={handleLikeClick}
-        className="hover:text-[var(--accent-primary)] active:text-[var(--accent-primary)]"
+        className={`hover:text-[var(--accent-primary)] active:text-[var(--accent-primary)] transition-all duration-300 ${
+          hasLiked ? "text-[var(--accent-primary)] scale-110 rotate-360" : ""
+        }`}
       >
         <ThumbsUpIcon size={18} />
       </button>
