@@ -22,7 +22,7 @@
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-A full-stack personal blog website built by me using [Next.js](https://nextjs.org/) with the App Router, styled using [Tailwind CSS](https://tailwindcss.com/), and enhanced with accessible UI components from [shadcn/ui](https://ui.shadcn.com/).
+A full-stack personal blog website built by me using [Next.js](https://nextjs.org/) with the App Router, styled using [Tailwind CSS](https://tailwindcss.com/), and enhanced with accessible UI components from [shadcn/ui](https://ui.shadcn.com/). Hosted in [Vercel](https://jrconcha-mini-project-2.vercel.app/), cloud storage by [Cloudinary](https://cloudinary.com)!
 
 ### ✨ Features
 
@@ -33,12 +33,13 @@ A full-stack personal blog website built by me using [Next.js](https://nextjs.or
 - 📝 **Dynamic Blog Post Pages**  
   - Employs dynamic generation for blog post pages!
   - Includes a comment form that uses **Server Actions** to save comments directly to the database  
-  - Supports real-time **revalidation**, so new comments appear instantly—no page reload needed!  
-  - Each post features **dynamically generated metadata** for better SEO and social sharing (Facebook, Twitter, Instagram, etc.)  
+  - Supports real-time **revalidation**, so new comments, blog posts, appear instantly—no page reload needed!  
+  - Each post features **dynamically generated metadata** for better SEO and social sharing (Facebook, Twitter)  
 - 🔧 **Tailwind CSS** for utility-first, fully responsive styling  
 - 🧩 **shadcn/ui** for accessible, customizable components  
 - 🌞 Includes a theme toggle for light, dark, or system preference — making displayed content easy on the eyes
 - 📱 Fully responsive layout optimized for mobile, tablet, and desktop
+- ☁️ Utilize Cloudinary to store images in the cloud!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
