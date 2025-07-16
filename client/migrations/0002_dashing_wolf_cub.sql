@@ -1,0 +1,1 @@
+ALTER TABLE "comments" ALTER COLUMN "like_count" SET NOT NULL;
